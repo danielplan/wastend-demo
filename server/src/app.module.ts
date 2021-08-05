@@ -1,5 +1,3 @@
-import { StuffController } from './stuff/controllers/stuff.controller';
-import { StuffService } from './stuff/services/stuff.service';
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -21,7 +19,7 @@ import { StuffModule } from './stuff/stuff.module';
     }),
     StuffModule,
   ],
-  controllers: [AppController, StuffController],
-  providers: [AppService, StuffService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

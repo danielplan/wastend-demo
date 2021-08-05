@@ -9,6 +9,6 @@ export class StuffItemEntity {
     name: string;
 
     @Column({default: 0})
-    amount: 0;
+    amount: number;
 
 }
