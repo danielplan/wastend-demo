@@ -1,21 +1,21 @@
-import { StuffItem } from './../model/item.interface';
+import { InventoryItem } from '../model/item.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { StuffItemEntity } from '../model/item.entity';
+import { InventoryItemEntity } from '../model/item.entity';
 import { from, Observable } from 'rxjs';
 
 @Injectable()
 export class StuffService {
     constructor(
-        @InjectRepository(StuffItemEntity)
-        private readonly stuffItemRepository: Repository<StuffItemEntity>
+        @InjectRepository(InventoryItemEntity)
+        private readonly stuffItemRepository: Repository<InventoryItemEntity>,
     ) {}
-    
-    addStuffItem(stuffItem: StuffItem): Observable<StuffItem> {
+
+    addStuffItem(stuffItem: InventoryItem): Observable<InventoryItem> {
         return from(this.stuffItemRepository.save(stuffItem));
     }
-    
+
     getAllStuffItems() {
         return this.stuffItemRepository.find();
     }

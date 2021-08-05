@@ -1,4 +1,4 @@
-export interface StuffItem {
+export interface InventoryItem {
     id: number;
     name: string;
     amount: number;
