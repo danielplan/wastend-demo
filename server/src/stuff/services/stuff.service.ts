@@ -15,4 +15,8 @@ export class StuffService {
     addStuffItem(stuffItem: StuffItem): Observable<StuffItem> {
         return from(this.stuffItemRepository.save(stuffItem));
     }
+    
+    getAllStuffItems() {
+        return this.stuffItemRepository.find();
+    }
 }
