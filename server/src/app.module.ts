@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { InventoryModule } from './inventory/inventory.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { InventoryModule } from './inventory/inventory.module';
             synchronize: true,
         }),
         InventoryModule,
+        AuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],

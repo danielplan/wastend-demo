@@ -1,15 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('stuff_item')
+@Entity('inventory_item')
 export class InventoryItemEntity {
-    @ApiProperty()
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ default: '' })
     @ApiProperty({
-        description: 'String',
+        description: 'Name that describes the inventory item',
         type: String,
     })
     name: string;

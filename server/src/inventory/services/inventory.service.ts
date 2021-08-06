@@ -1,22 +1,33 @@
-import { InventoryItem } from '../model/item.interface';
+import { InventoryItem } from '../models/item.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { InventoryItemEntity } from '../model/item.entity';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { InventoryItemEntity } from '../models/item.entity';
 import { from, Observable } from 'rxjs';
 
 @Injectable()
-export class StuffService {
+export class InventoryService {
     constructor(
         @InjectRepository(InventoryItemEntity)
-        private readonly stuffItemRepository: Repository<InventoryItemEntity>,
+        private readonly inventoryItemRepository: Repository<InventoryItemEntity>,
     ) {}
 
-    addStuffItem(stuffItem: InventoryItem): Observable<InventoryItem> {
-        return from(this.stuffItemRepository.save(stuffItem));
+    addInventoryItem(inventoryItem: InventoryItem): Observable<InventoryItem> {
+        return from(this.inventoryItemRepository.save(inventoryItem));
     }
 
-    getAllStuffItems() {
-        return this.stuffItemRepository.find();
+    getAllInventoryItems(): Observable<InventoryItem[]> {
+        return from(this.inventoryItemRepository.find());
+    }
+
+    updateInventoryItem(
+        id: number,
+        inventoryItem: InventoryItem,
+    ): Observable<UpdateResult> {
+        return from(this.inventoryItemRepository.update(id, inventoryItem));
+    }
+
+    deleteInventoryItem(id: number): Observable<DeleteResult> {
+        return from(this.inventoryItemRepository.delete(id));
     }
 }
