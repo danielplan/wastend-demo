@@ -1,3 +1,4 @@
+import { Validator } from './../../validator';
 import { User } from './../models/user.entity';
 import { HttpStatus, Injectable, HttpException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -21,16 +22,19 @@ export class AuthService {
 
     async registerAccount(user: User): Promise<User> {
         //check input
-        const validationResult: string | null = User.validate(user);
-        if (validationResult !== null) {
-            throw new HttpException(validationResult, HttpStatus.BAD_REQUEST);
+        const validationResult: Validator = User.validate(user);
+        if (validationResult.hasErrors()) {
+            throw new HttpException(
+                validationResult.getErrors(),
+                HttpStatus.BAD_REQUEST,
+            );
         }
 
         //check if already exists
-        const alreadyExists = (await this.getUserById(user.id)) !== undefined;
+        const alreadyExists = (await this.getUserById(user.id)) === undefined;
         if (alreadyExists) {
             throw new HttpException(
-                'This user already exists',
+                Validator.getErrorsString(['This user already exists']),
                 HttpStatus.CONFLICT,
             );
         }
