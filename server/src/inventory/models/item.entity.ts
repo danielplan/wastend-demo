@@ -1,15 +1,9 @@
-import { GroupEntity } from './../../auth/models/group.entity';
+import { Group } from './../../auth/models/group.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-    Column,
-    Entity,
-    PrimaryGeneratedColumn,
-    OneToMany,
-    ManyToOne,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity('inventory_item')
-export class InventoryItemEntity {
+export class InventoryItem {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -34,10 +28,10 @@ export class InventoryItemEntity {
     })
     unit: string;
 
-    @ManyToOne(() => GroupEntity, (groupEntity) => groupEntity.inventoryItems)
+    @ManyToOne(() => Group, (groupEntity) => groupEntity.inventoryItems)
     @ApiProperty({
         description: 'The group the item belongs to',
-        type: () => GroupEntity,
+        type: () => Group,
     })
-    group: GroupEntity;
+    group: Group;
 }

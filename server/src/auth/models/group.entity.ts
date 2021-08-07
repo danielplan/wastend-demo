@@ -1,28 +1,24 @@
-import { InventoryItem } from './../../inventory/models/item.interface';
-import { InventoryItemEntity } from './../../inventory/models/item.entity';
-import { UserEntity } from './user.entity';
+import { InventoryItem } from './../../inventory/models/item.entity';
+import { User } from './user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { PrimaryGeneratedColumn, OneToMany, Entity } from 'typeorm';
 
 @Entity('group')
-export class GroupEntity {
+export class Group {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @OneToMany(() => UserEntity, (userEntity) => userEntity.group)
+    @OneToMany(() => User, (userEntity) => userEntity.group)
     @ApiProperty({
         description: 'The group members of a group',
-        type: () => [UserEntity],
+        type: () => [User],
     })
-    members: UserEntity[];
+    members: User[];
 
-    @OneToMany(
-        () => InventoryItemEntity,
-        (inventoryItem) => inventoryItem.group,
-    )
+    @OneToMany(() => InventoryItem, (inventoryItem) => inventoryItem.group)
     @ApiProperty({
         description: 'The inventory items of a group',
-        type: () => [InventoryItemEntity],
+        type: () => [InventoryItem],
     })
     inventoryItems: InventoryItem[];
 }

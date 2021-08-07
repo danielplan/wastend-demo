@@ -1,40 +1,46 @@
-import { UserEntity } from './../models/user.entity';
-import { User } from './../models/user.interface';
-import { Observable, switchMap } from 'rxjs';
-import { Injectable } from '@nestjs/common';
+import { User } from './../models/user.entity';
+import { HttpStatus, Injectable, HttpException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { from } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { map } from 'rxjs';
 
 @Injectable()
 export class AuthService {
     constructor(
-        @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
     ) {}
 
-    hashPassword(password: string): Observable<string> {
-        return from(bcrypt.hash(password, 12));
+    hashPassword(password: string): Promise<string> {
+        return bcrypt.hash(password, 12);
     }
 
-    registerAccount(user: User): Observable<User> {
-        const { password } = user;
-        return this.hashPassword(password).pipe(
-            switchMap((hashedPassword: string) => {
-                return from(
-                    this.userRepository.save({
-                        ...user,
-                        password: hashedPassword,
-                    }),
-                ).pipe(
-                    map((user: User) => {
-                        delete user.password;
-                        return user;
-                    }),
-                );
-            }),
-        );
+    async getUserById(id: number): Promise<User> {
+        return this.userRepository.findOneOrFail(id);
+    }
+
+    async registerAccount(user: User): Promise<User> {
+        //check input
+        const validationResult: string | null = User.validate(user);
+        if (validationResult !== null) {
+            throw new HttpException(validationResult, HttpStatus.BAD_REQUEST);
+        }
+
+        //check if already exists
+        const alreadyExists = (await this.getUserById(user.id)) !== undefined;
+        if (alreadyExists) {
+            throw new HttpException(
+                'This user already exists',
+                HttpStatus.CONFLICT,
+            );
+        }
+        //create user
+        const hashedPassword: string = await this.hashPassword(user.password);
+        const newUser: User = await this.userRepository.save({
+            ...user,
+            password: hashedPassword,
+        });
+        delete newUser.password;
+        return newUser;
     }
 }

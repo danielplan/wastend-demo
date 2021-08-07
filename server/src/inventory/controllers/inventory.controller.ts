@@ -1,5 +1,3 @@
-import { UpdateResult, DeleteResult } from 'typeorm';
-import { Observable } from 'rxjs';
 import { InventoryService } from '../services/inventory.service';
 import {
     Body,
@@ -10,9 +8,8 @@ import {
     Post,
     Put,
 } from '@nestjs/common';
-import { InventoryItem } from '../models/item.interface';
 import { ApiBody, ApiOperation, ApiParam } from '@nestjs/swagger';
-import { InventoryItemEntity } from '../models/item.entity';
+import { InventoryItem } from '../models/item.entity';
 
 @Controller('inventory')
 export class InventoryController {
@@ -23,32 +20,32 @@ export class InventoryController {
         summary: 'Finds all the inventory item',
         tags: ['Inventory'],
     })
-    getAllItems(): Observable<InventoryItem[]> {
+    getAllItems(): Promise<InventoryItem[]> {
         return this.inventoryService.getAllInventoryItems();
     }
 
     @Post()
     @ApiOperation({ summary: 'Adds an inventory item', tags: ['Inventory'] })
-    @ApiBody({ type: InventoryItemEntity })
-    addItem(@Body() inventoryItem: InventoryItem): Observable<InventoryItem> {
+    @ApiBody({ type: InventoryItem })
+    addItem(@Body() inventoryItem: InventoryItem): Promise<InventoryItem> {
         return this.inventoryService.addInventoryItem(inventoryItem);
     }
 
     @Put(':id')
     @ApiOperation({ summary: 'Updates an inventory item', tags: ['Inventory'] })
     @ApiParam({ type: Number, name: 'id' })
-    @ApiBody({ type: InventoryItemEntity })
+    @ApiBody({ type: InventoryItem })
     updateItem(
         @Param('id') id: number,
         @Body() inventoryItem: InventoryItem,
-    ): Observable<UpdateResult> {
+    ): Promise<InventoryItem> {
         return this.inventoryService.updateInventoryItem(id, inventoryItem);
     }
 
     @Delete(':id')
     @ApiOperation({ summary: 'Deletes an inventory item', tags: ['Inventory'] })
     @ApiParam({ type: Number, name: 'id' })
-    deleteItem(@Param('id') id: number): Observable<DeleteResult> {
+    deleteItem(@Param('id') id: number): Promise<InventoryItem> {
         return this.inventoryService.deleteInventoryItem(id);
     }
 }

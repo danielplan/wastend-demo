@@ -1,33 +1,37 @@
-import { InventoryItem } from '../models/item.interface';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { InventoryItemEntity } from '../models/item.entity';
-import { from, Observable } from 'rxjs';
+import { InventoryItem } from '../models/item.entity';
 
 @Injectable()
 export class InventoryService {
     constructor(
-        @InjectRepository(InventoryItemEntity)
-        private readonly inventoryItemRepository: Repository<InventoryItemEntity>,
+        @InjectRepository(InventoryItem)
+        private readonly inventoryItemRepository: Repository<InventoryItem>,
     ) {}
 
-    addInventoryItem(inventoryItem: InventoryItem): Observable<InventoryItem> {
-        return from(this.inventoryItemRepository.save(inventoryItem));
+    addInventoryItem(inventoryItem: InventoryItem): Promise<InventoryItem> {
+        return this.inventoryItemRepository.save(inventoryItem);
     }
 
-    getAllInventoryItems(): Observable<InventoryItem[]> {
-        return from(this.inventoryItemRepository.find());
+    getAllInventoryItems(): Promise<InventoryItem[]> {
+        return this.inventoryItemRepository.find();
     }
 
-    updateInventoryItem(
+    async updateInventoryItem(
         id: number,
         inventoryItem: InventoryItem,
-    ): Observable<UpdateResult> {
-        return from(this.inventoryItemRepository.update(id, inventoryItem));
+    ): Promise<InventoryItem> {
+        let item: InventoryItem =
+            await this.inventoryItemRepository.findOneOrFail(id);
+        item = { ...item, ...inventoryItem };
+        return this.inventoryItemRepository.save(item);
     }
 
-    deleteInventoryItem(id: number): Observable<DeleteResult> {
-        return from(this.inventoryItemRepository.delete(id));
+    async deleteInventoryItem(id: number): Promise<InventoryItem> {
+        const item: InventoryItem =
+            await this.inventoryItemRepository.findOneOrFail(id);
+        this.inventoryItemRepository.remove(item);
+        return item;
     }
 }
