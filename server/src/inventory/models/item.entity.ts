@@ -1,3 +1,4 @@
+import { InventoryCategory } from './category.entity';
 import { Validator } from './../../validator';
 import { Group } from './../../auth/models/group.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -16,7 +17,7 @@ export class InventoryItem {
     })
     name: string;
 
-    @Column({ default: 0 })
+    @Column()
     @ApiProperty({
         description: 'Amount of the item in the inventory',
         type: Number,
@@ -30,6 +31,13 @@ export class InventoryItem {
     })
     unit: string;
 
+    @ManyToOne(() => InventoryCategory, (category) => category.inventoryItems)
+    @ApiProperty({
+        description: 'The category of the inventory item',
+        type: () => InventoryCategory,
+    })
+    category: InventoryCategory;
+
     @ManyToOne(() => Group, (groupEntity) => groupEntity.inventoryItems)
     @ApiProperty({
         description: 'The group the item belongs to',
@@ -40,7 +48,7 @@ export class InventoryItem {
     static validate(item: InventoryItem): void {
         const validation: Validator = new Validator();
         validation.assertExists('name', item.name);
-        validation.assertGreaterThan('amount', item.amount, 0);
+        validation.assertGreaterOrEqualTo('amount', item.amount, 0);
         validation.assertExists('unit', item.unit);
         validation.throwErrors(HttpStatus.BAD_REQUEST);
     }

@@ -25,16 +25,25 @@ export class InventoryService {
         inventoryItem: InventoryItem,
     ): Promise<InventoryItem> {
         InventoryItem.validate(inventoryItem);
-        let item: InventoryItem =
-            await this.inventoryItemRepository.findOneOrFail(id);
-        item = { ...item, ...inventoryItem };
-        return this.inventoryItemRepository.save(item);
+        try {
+            let item: InventoryItem =
+                await this.inventoryItemRepository.findOneOrFail(id);
+            item = { ...item, ...inventoryItem, id: parseInt(id.toString()) };
+            this.inventoryItemRepository.update(id, item);
+            return item;
+        } catch (e) {
+            Validator.throwNotFound();
+        }
     }
 
     async deleteInventoryItem(id: number): Promise<InventoryItem> {
-        const item: InventoryItem =
-            await this.inventoryItemRepository.findOneOrFail(id);
-        this.inventoryItemRepository.remove(item);
-        return item;
+        try {
+            const item: InventoryItem =
+                await this.inventoryItemRepository.findOneOrFail(id);
+            this.inventoryItemRepository.remove(item);
+            return item;
+        } catch (e) {
+            Validator.throwNotFound();
+        }
     }
 }
