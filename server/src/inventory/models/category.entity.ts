@@ -4,8 +4,8 @@ import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { HttpStatus } from '@nestjs/common';
 import { InventoryItem } from './item.entity';
 
-@Entity('inventory_category')
-export class InventoryCategory {
+@Entity('item_category')
+export class ItemCategory {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -23,7 +23,7 @@ export class InventoryCategory {
     })
     inventoryItems: InventoryItem[];
 
-    static validate(category: InventoryCategory): void {
+    static validate(category: ItemCategory): void {
         const validator: Validator = new Validator();
         validator.assertExists('name', category.name);
         validator.throwErrors(HttpStatus.NOT_FOUND);

@@ -1,7 +1,7 @@
 import { User } from './../models/user.entity';
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiOperation } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -9,6 +9,7 @@ export class AuthController {
 
     @Post('register')
     @ApiBody({ type: User })
+    @ApiOperation({ summary: 'Creates a new user if possible', tags: ['Auth'] })
     register(@Body() user: User): Promise<User> {
         return this.authService.registerAccount(user);
     }

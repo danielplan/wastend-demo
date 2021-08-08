@@ -1,4 +1,4 @@
-import { InventoryCategory } from './category.entity';
+import { ItemCategory } from './category.entity';
 import { Validator } from './../../validator';
 import { Group } from './../../auth/models/group.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -31,12 +31,12 @@ export class InventoryItem {
     })
     unit: string;
 
-    @ManyToOne(() => InventoryCategory, (category) => category.inventoryItems)
+    @ManyToOne(() => ItemCategory, (category) => category.inventoryItems)
     @ApiProperty({
         description: 'The category of the inventory item',
-        type: () => InventoryCategory,
+        type: () => ItemCategory,
     })
-    category: InventoryCategory;
+    category: ItemCategory;
 
     @ManyToOne(() => Group, (groupEntity) => groupEntity.inventoryItems)
     @ApiProperty({
