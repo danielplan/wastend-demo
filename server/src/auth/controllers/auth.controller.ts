@@ -13,4 +13,11 @@ export class AuthController {
     register(@Body() user: User): Promise<User> {
         return this.authService.registerAccount(user);
     }
+
+    @Post('login')
+    @ApiBody({ type: User })
+    @ApiOperation({ summary: 'Get a jwt token if successful', tags: ['Auth'] })
+    login(@Body() user: User): Promise<{ token: string }> {
+        return this.authService.login(user);
+    }
 }

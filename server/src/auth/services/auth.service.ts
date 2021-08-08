@@ -4,12 +4,14 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        private jwtService: JwtService,
     ) {}
 
     hashPassword(password: string): Promise<string> {
@@ -17,7 +19,7 @@ export class AuthService {
     }
 
     async getUserById(id: number): Promise<User> {
-        return this.userRepository.findOneOrFail(id);
+        return this.userRepository.findOne(id);
     }
 
     async registerAccount(user: User): Promise<User> {
@@ -25,7 +27,7 @@ export class AuthService {
         User.validate(user);
 
         //check if already exists
-        const alreadyExists = (await this.getUserById(user.id)) === undefined;
+        const alreadyExists = (await this.getUserById(user.id)) !== undefined;
         if (alreadyExists) {
             Validator.throwErrors(
                 ['This user already exists'],
@@ -40,5 +42,41 @@ export class AuthService {
         });
         delete newUser.password;
         return newUser;
+    }
+
+    async validateLogin(username: string, password: string): Promise<User> {
+        const user: User = await this.userRepository.findOne(
+            { username },
+            { select: ['id', 'password'] },
+        );
+        if (user === undefined) {
+            Validator.throwErrors(
+                ['User with that username not found'],
+                HttpStatus.NOT_FOUND,
+            );
+        }
+
+        const passwordCorrect: boolean = await bcrypt.compare(
+            password,
+            user.password,
+        );
+        if (!passwordCorrect) {
+            Validator.throwErrors(
+                ['This password was not correct'],
+                HttpStatus.NOT_FOUND,
+            );
+        }
+
+        delete user.password;
+        return user;
+    }
+
+    async login(user: User): Promise<{ token: string }> {
+        const { username, password } = user;
+        const loginUser: User = await this.validateLogin(username, password);
+        const token: string = await this.jwtService.signAsync({ loginUser });
+        return {
+            token,
+        };
     }
 }
