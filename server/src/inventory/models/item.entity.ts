@@ -2,6 +2,7 @@ import { Validator } from './../../validator';
 import { Group } from './../../auth/models/group.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { HttpStatus } from '@nestjs/common';
 
 @Entity('inventory_item')
 export class InventoryItem {
@@ -36,11 +37,11 @@ export class InventoryItem {
     })
     group: Group;
 
-    static validate(item: InventoryItem): Validator {
+    static validate(item: InventoryItem): void {
         const validation: Validator = new Validator();
-        validation.assertExists('unit', item.unit);
-        validation.assertGreaterThan('amout', item.amount, 0);
         validation.assertExists('name', item.name);
-        return validation;
+        validation.assertGreaterThan('amount', item.amount, 0);
+        validation.assertExists('unit', item.unit);
+        validation.throwErrors(HttpStatus.BAD_REQUEST);
     }
 }

@@ -2,6 +2,7 @@ import { Validator } from './../../validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, ManyToOne, PrimaryGeneratedColumn, Entity } from 'typeorm';
 import { Group } from './group.entity';
+import { HttpStatus } from '@nestjs/common';
 
 @Entity('user')
 export class User {
@@ -36,11 +37,11 @@ export class User {
     })
     group?: Group;
 
-    static validate(user: User): Validator {
+    static validate(user: User): void {
         const validation: Validator = new Validator();
         validation.assertLength('username', user.username, 3);
         validation.assertLength('password', user.password, 6);
         validation.assertExists('displayname', user.displayName);
-        return validation;
+        validation.throwErrors(HttpStatus.BAD_REQUEST);
     }
 }

@@ -1,3 +1,4 @@
+import { Validator } from './../../validator';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,6 +12,7 @@ export class InventoryService {
     ) {}
 
     addInventoryItem(inventoryItem: InventoryItem): Promise<InventoryItem> {
+        InventoryItem.validate(inventoryItem);
         return this.inventoryItemRepository.save(inventoryItem);
     }
 
@@ -22,6 +24,7 @@ export class InventoryService {
         id: number,
         inventoryItem: InventoryItem,
     ): Promise<InventoryItem> {
+        InventoryItem.validate(inventoryItem);
         let item: InventoryItem =
             await this.inventoryItemRepository.findOneOrFail(id);
         item = { ...item, ...inventoryItem };

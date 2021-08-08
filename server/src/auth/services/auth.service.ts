@@ -22,19 +22,13 @@ export class AuthService {
 
     async registerAccount(user: User): Promise<User> {
         //check input
-        const validationResult: Validator = User.validate(user);
-        if (validationResult.hasErrors()) {
-            throw new HttpException(
-                validationResult.getErrors(),
-                HttpStatus.BAD_REQUEST,
-            );
-        }
+        User.validate(user);
 
         //check if already exists
         const alreadyExists = (await this.getUserById(user.id)) === undefined;
         if (alreadyExists) {
-            throw new HttpException(
-                Validator.getErrorsString(['This user already exists']),
+            Validator.throwErrors(
+                ['This user already exists'],
                 HttpStatus.CONFLICT,
             );
         }

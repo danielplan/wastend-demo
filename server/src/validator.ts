@@ -1,3 +1,4 @@
+import { HttpStatus, HttpException } from '@nestjs/common';
 export class Validator {
     errors: string[];
 
@@ -31,12 +32,14 @@ export class Validator {
         }
     }
 
-    hasErrors(): boolean {
-        return this.errors.length > 0;
+    throwErrors(status: HttpStatus): void {
+        Validator.throwErrors(this.errors, status);
     }
 
-    getErrors(): string {
-        return Validator.getErrorsString(this.errors);
+    static throwErrors(errors: string[], status: HttpStatus): void {
+        if (errors.length > 0) {
+            throw new HttpException(Validator.getErrorsString(errors), status);
+        }
     }
 
     static getErrorsString(errors: string[]): string {
