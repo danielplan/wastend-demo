@@ -45,10 +45,14 @@ export class AuthService {
     }
 
     async validateLogin(username: string, password: string): Promise<User> {
-        const user: User = await this.userRepository.findOne(
-            { username },
-            { select: ['id', 'password'] },
-        );
+        const user: User = await this.userRepository
+            .createQueryBuilder()
+            .select('username, password')
+            .addSelect('groupId', 'group')
+            .where('username = :username', { username })
+            .getRawOne();
+        console.log(user);
+
         if (user === undefined) {
             Validator.throwErrors(
                 ['User with that username not found'],
@@ -73,8 +77,10 @@ export class AuthService {
 
     async login(user: User): Promise<{ token: string }> {
         const { username, password } = user;
-        const loginUser: User = await this.validateLogin(username, password);
-        const token: string = await this.jwtService.signAsync({ loginUser });
+        user = await this.validateLogin(username, password);
+        const token: string = await this.jwtService.signAsync({
+            user,
+        });
         return {
             token,
         };

@@ -11,6 +11,10 @@ async function bootstrap() {
         .setTitle('wastend API')
         .setDescription('API routes for wastend')
         .setVersion('1.0.0')
+        .addBasicAuth(
+            { type: 'apiKey', in: 'header', name: 'Authorization' },
+            'JWT',
+        )
         .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('/', app, document);

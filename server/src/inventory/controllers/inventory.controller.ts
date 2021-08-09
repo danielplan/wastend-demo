@@ -1,3 +1,4 @@
+import { JwtGuard } from './../../auth/guards/jwt.guard';
 import { InventoryService } from '../services/inventory.service';
 import {
     Body,
@@ -7,8 +8,10 @@ import {
     Param,
     Post,
     Put,
+    Request,
+    UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiBody, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { InventoryItem } from '../models/item.entity';
 
 @Controller('inventory')
@@ -17,18 +20,28 @@ export class InventoryController {
 
     @Get()
     @ApiOperation({
-        summary: 'Finds all the inventory item',
+        summary: 'Finds all the inventory items in your group',
         tags: ['Inventory'],
     })
-    getAllItems(): Promise<InventoryItem[]> {
-        return this.inventoryService.getAllInventoryItems();
+    @ApiBasicAuth('JWT')
+    @UseGuards(JwtGuard)
+    getAllItems(@Request() req): Promise<InventoryItem[]> {
+        return this.inventoryService.getAllInventoryItems(req.user);
     }
 
     @Post()
-    @ApiOperation({ summary: 'Adds an inventory item', tags: ['Inventory'] })
+    @ApiOperation({
+        summary: 'Adds an inventory item to your group`s inventory',
+        tags: ['Inventory'],
+    })
     @ApiBody({ type: InventoryItem })
-    addItem(@Body() inventoryItem: InventoryItem): Promise<InventoryItem> {
-        return this.inventoryService.addInventoryItem(inventoryItem);
+    @UseGuards(JwtGuard)
+    @ApiBasicAuth('JWT')
+    addItem(
+        @Body() inventoryItem: InventoryItem,
+        @Request() req,
+    ): Promise<InventoryItem> {
+        return this.inventoryService.addInventoryItem(inventoryItem, req.user);
     }
 
     @Put(':id')

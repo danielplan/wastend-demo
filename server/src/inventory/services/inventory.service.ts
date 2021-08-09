@@ -1,8 +1,9 @@
 import { Validator } from './../../validator';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { InventoryItem } from '../models/item.entity';
+import { User } from 'src/auth/models/user.entity';
 
 @Injectable()
 export class InventoryService {
@@ -11,13 +12,31 @@ export class InventoryService {
         private readonly inventoryItemRepository: Repository<InventoryItem>,
     ) {}
 
-    addInventoryItem(inventoryItem: InventoryItem): Promise<InventoryItem> {
-        InventoryItem.validate(inventoryItem);
-        return this.inventoryItemRepository.save(inventoryItem);
+    addInventoryItem(
+        inventoryItem: InventoryItem,
+        user: User,
+    ): Promise<InventoryItem> {
+        if (user.group) {
+            InventoryItem.validate(inventoryItem);
+            inventoryItem.group = user.group;
+            return this.inventoryItemRepository.save(inventoryItem);
+        } else {
+            Validator.throwErrors(
+                ['User has to be in a group'],
+                HttpStatus.BAD_REQUEST,
+            );
+        }
     }
 
-    getAllInventoryItems(): Promise<InventoryItem[]> {
-        return this.inventoryItemRepository.find();
+    getAllInventoryItems(user: User): Promise<InventoryItem[]> {
+        if (user.group) {
+            return this.inventoryItemRepository.find({ group: user.group });
+        } else {
+            Validator.throwErrors(
+                ['User has to be in a group'],
+                HttpStatus.BAD_REQUEST,
+            );
+        }
     }
 
     async updateInventoryItem(
