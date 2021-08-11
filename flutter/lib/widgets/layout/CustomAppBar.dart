@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wastend/api/Auth.dart';
+import 'package:wastend/api/AuthApi.dart';
 import '/abstract/themes.dart';
 
 class CustomAppBar extends AppBar {
@@ -42,7 +42,7 @@ class CustomAppBar extends AppBar {
     ),
     IconButton(
       onPressed: () {
-        Auth.logout();
+        AuthApi.logout();
       },
       icon: Icon(Icons.logout, size: 32.0, color: CustomTheme.light),
     )

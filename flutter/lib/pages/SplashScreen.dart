@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wastend/api/Auth.dart';
+import 'package:wastend/api/AuthApi.dart';
 import 'package:wastend/pages/LoginPage.dart';
 import 'package:wastend/widgets/layout/AppWrapper.dart';
 
@@ -14,7 +14,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget? _currentPage;
 
   Future<void> checkLoggedIn() async {
-    bool isLoggedIn = await Auth.isLoggedIn();
+    bool isLoggedIn = await AuthApi.isLoggedIn();
     setState(() {
       _currentPage = isLoggedIn ? AppWrapper() : LoginPage();
     });

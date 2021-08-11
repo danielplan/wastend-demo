@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:wastend/api/Auth.dart';
+import 'package:wastend/api/AuthApi.dart';
 import 'package:wastend/widgets/form/ErrorList.dart';
-import 'package:wastend/widgets/ui/Callout.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -50,10 +47,10 @@ class _LoginFormState extends State<LoginForm> {
                 child: ElevatedButton(
               onPressed: () {
                 _formKey.currentState!.save();
-                Auth.login(_username, _password).then((errors) {
-                  if (errors != null) {
+                AuthApi.login(_username, _password).then((response) {
+                  if (!response.success) {
                     setState(() {
-                      _errors = errors;
+                      _errors = response.errors!;
                     });
                   }
                 });

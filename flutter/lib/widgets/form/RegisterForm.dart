@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wastend/api/Auth.dart';
+import 'package:wastend/api/AuthApi.dart';
 import 'package:wastend/widgets/form/ErrorList.dart';
 
 class RegisterForm extends StatefulWidget {
@@ -68,13 +68,13 @@ class _RegisterFormState extends State<RegisterForm> {
               onPressed: () {
                 _formKey.currentState!.save();
                 if (_password == _password2) {
-                  Auth.register(_username, _displayName, _password)
-                      .then((errors) {
-                    if (errors == null) {
+                  AuthApi.register(_username, _displayName, _password)
+                      .then((response) {
+                    if (response.success) {
                       Navigator.of(context).pop();
                     } else {
                       setState(() {
-                        _errors = errors;
+                        _errors = response.errors!;
                       });
                     }
                   });
