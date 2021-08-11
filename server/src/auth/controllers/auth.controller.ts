@@ -19,7 +19,7 @@ export class AuthController {
     @Post('register')
     @ApiBody({ type: User })
     @ApiOperation({ summary: 'Creates a new user if possible', tags: ['Auth'] })
-    register(@Body() user: User): Promise<User> {
+    register(@Body() user: User): Promise<{ token: string }> {
         return this.authService.registerAccount(user);
     }
 

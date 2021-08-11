@@ -18,7 +18,7 @@ export class AuthService {
         return bcrypt.hash(password, 12);
     }
 
-    async registerAccount(user: User): Promise<User> {
+    async registerAccount(user: User): Promise<{ token: string }> {
         //check input
         User.validate(user);
 
@@ -34,13 +34,13 @@ export class AuthService {
         }
         //create user
         const hashedPassword: string = await this.hashPassword(user.password);
+
+        delete user.group;
         const newUser: User = await this.userRepository.save({
             ...user,
             password: hashedPassword,
         });
-        delete newUser.password;
-        delete newUser.group;
-        return newUser;
+        return this.createToken(newUser.id);
     }
 
     async validateLogin(username: string, password: string): Promise<User> {
@@ -76,12 +76,16 @@ export class AuthService {
     async login(user: User): Promise<{ token: string }> {
         const { username, password } = user;
         user = await this.validateLogin(username, password);
+        return this.createToken(user.id);
+    }
+
+    async createToken(userId: number): Promise<{ token: string }> {
         const token: string = await this.jwtService.signAsync({
-            user,
+            user: {
+                id: userId,
+            },
         });
-        return {
-            token,
-        };
+        return { token };
     }
 
     async getUserData(id: number): Promise<User> {
