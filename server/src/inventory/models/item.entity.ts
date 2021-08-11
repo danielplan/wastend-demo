@@ -1,6 +1,6 @@
 import { ItemCategory } from './category.entity';
 import { Validator } from './../../validator';
-import { Group } from './../../auth/models/group.entity';
+import { Group } from '../../group/models/group.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { HttpStatus } from '@nestjs/common';

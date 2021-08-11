@@ -18,16 +18,14 @@ export class AuthService {
         return bcrypt.hash(password, 12);
     }
 
-    async getUserById(id: number): Promise<User> {
-        return this.userRepository.findOne(id);
-    }
-
     async registerAccount(user: User): Promise<User> {
         //check input
         User.validate(user);
 
         //check if already exists
-        const alreadyExists = (await this.getUserById(user.id)) !== undefined;
+        const alreadyExists =
+            (await this.userRepository.findOne({ username: user.username })) !==
+            undefined;
         if (alreadyExists) {
             Validator.throwErrors(
                 ['This user already exists'],
@@ -48,8 +46,7 @@ export class AuthService {
         const user: User = await this.userRepository.findOne(
             { username },
             {
-                select: ['id', 'username', 'password'],
-                relations: ['group'],
+                select: ['id', 'password'],
             },
         );
 

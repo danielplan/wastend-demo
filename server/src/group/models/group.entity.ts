@@ -1,6 +1,6 @@
-import { Validator } from './../../validator';
-import { InventoryItem } from './../../inventory/models/item.entity';
-import { User } from './user.entity';
+import { Validator } from '../../validator';
+import { InventoryItem } from '../../inventory/models/item.entity';
+import { User } from '../../auth/models/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { PrimaryGeneratedColumn, OneToMany, Entity, Column } from 'typeorm';
 import { HttpStatus } from '@nestjs/common';
@@ -17,7 +17,7 @@ export class Group {
     })
     name: string;
 
-    @OneToMany(() => User, (userEntity) => userEntity.group)
+    @OneToMany(() => User, (user) => user.group)
     @ApiProperty({
         description: 'The group members of a group',
         type: () => [User],

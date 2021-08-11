@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
-import { Group } from './models/group.entity';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
@@ -16,7 +15,7 @@ import { JwtModule } from '@nestjs/jwt';
                 signOptions: { expiresIn: '3600s' },
             }),
         }),
-        TypeOrmModule.forFeature([User, Group]),
+        TypeOrmModule.forFeature([User]),
     ],
     providers: [AuthService, JwtGuard, JwtStrategy],
     controllers: [AuthController],

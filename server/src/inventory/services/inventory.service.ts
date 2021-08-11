@@ -10,38 +10,34 @@ export class InventoryService {
     constructor(
         @InjectRepository(InventoryItem)
         private readonly inventoryItemRepository: Repository<InventoryItem>,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
     ) {}
 
-    addInventoryItem(
+    async addInventoryItem(
         inventoryItem: InventoryItem,
         user: User,
     ): Promise<InventoryItem> {
-        if (user.group) {
-            InventoryItem.validate(inventoryItem);
-            inventoryItem.group = user.group;
-            return this.inventoryItemRepository.save(inventoryItem);
-        } else {
-            Validator.throwErrors(
-                ['User has to be in a group'],
-                HttpStatus.BAD_REQUEST,
-            );
-        }
+        user = await this.userRepository.findOne(user.id, {
+            relations: ['group'],
+        });
+        user.assertIsInGroup();
+        InventoryItem.validate(inventoryItem);
+        inventoryItem.group = user.group;
+        return this.inventoryItemRepository.save(inventoryItem);
     }
 
-    getAllInventoryItems(user: User): Promise<InventoryItem[]> {
-        if (user.group) {
-            return this.inventoryItemRepository.find({
-                where: {
-                    group: user.group,
-                },
-                relations: ['category'],
-            });
-        } else {
-            Validator.throwErrors(
-                ['User has to be in a group'],
-                HttpStatus.BAD_REQUEST,
-            );
-        }
+    async getAllInventoryItems(user: User): Promise<InventoryItem[]> {
+        user = await this.userRepository.findOne(user.id, {
+            relations: ['group'],
+        });
+        user.assertIsInGroup();
+        return this.inventoryItemRepository.find({
+            where: {
+                group: user.group,
+            },
+            relations: ['category'],
+        });
     }
 
     async updateInventoryItem(
@@ -49,6 +45,9 @@ export class InventoryService {
         inventoryItem: InventoryItem,
         user: User,
     ): Promise<InventoryItem> {
+        user = await this.userRepository.findOne(user.id, {
+            relations: ['group'],
+        });
         InventoryItem.validate(inventoryItem);
 
         let item: InventoryItem = await this.inventoryItemRepository.findOne(
@@ -61,23 +60,21 @@ export class InventoryService {
             Validator.throwNotFound();
         }
 
-        if (user.group && user.group.id === item.group.id) {
-            item = {
-                ...item,
-                ...inventoryItem,
-                id: parseInt(id.toString()),
-            };
-            this.inventoryItemRepository.update(id, item);
-            return item;
-        } else {
-            Validator.throwErrors(
-                ['This item is not in your group'],
-                HttpStatus.BAD_REQUEST,
-            );
-        }
+        this.assertItemIsInGroup(user, item);
+        item = {
+            ...item,
+            ...inventoryItem,
+            group: item.group,
+            id: parseInt(id.toString()),
+        };
+        this.inventoryItemRepository.update(id, item);
+        return item;
     }
 
     async deleteInventoryItem(id: number, user: User): Promise<InventoryItem> {
+        user = await this.userRepository.findOne(user.id, {
+            relations: ['group'],
+        });
         const item: InventoryItem = await this.inventoryItemRepository.findOne(
             id,
             { relations: ['group'] },
@@ -86,10 +83,13 @@ export class InventoryService {
             Validator.throwNotFound();
         }
 
-        if (user.group && item.group.id === user.group.id) {
-            this.inventoryItemRepository.remove(item);
-            return item;
-        } else {
+        this.assertItemIsInGroup(user, item);
+        this.inventoryItemRepository.remove(item);
+        return item;
+    }
+
+    assertItemIsInGroup(user: User, item: InventoryItem) {
+        if (!user.group || item.group.id !== user.group.id) {
             Validator.throwErrors(
                 ['This item is not in your group'],
                 HttpStatus.BAD_REQUEST,
