@@ -1,7 +1,16 @@
+import { JwtGuard } from './../guards/jwt.guard';
 import { User } from './../models/user.entity';
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    Body,
+    Get,
+    Param,
+    Request,
+    UseGuards,
+} from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
-import { ApiBody, ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiBasicAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -19,5 +28,20 @@ export class AuthController {
     @ApiOperation({ summary: 'Get a jwt token if successful', tags: ['Auth'] })
     login(@Body() user: User): Promise<{ token: string }> {
         return this.authService.login(user);
+    }
+
+    @Get(':id')
+    @ApiParam({ name: 'id', type: Number })
+    @ApiOperation({ summary: 'Get data of a user', tags: ['Auth'] })
+    getData(@Param('id') id: number): Promise<User> {
+        return this.authService.getUserData(id);
+    }
+
+    @Get()
+    @UseGuards(JwtGuard)
+    @ApiBasicAuth('JWT')
+    @ApiOperation({ summary: 'Get current user data', tags: ['Auth'] })
+    getCurrentData(@Request() req): Promise<User> {
+        return this.authService.getUserData(req.user.id);
     }
 }

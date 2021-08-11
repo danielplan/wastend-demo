@@ -20,6 +20,17 @@ export class Validator {
         }
     }
 
+    assertRegex(
+        name: string,
+        containString: string,
+        string: string,
+        regex: RegExp,
+    ): void {
+        if (string === undefined || !string.match(regex)) {
+            this.errors.push(`${name} ${containString}.`);
+        }
+    }
+
     assertGreaterOrEqualTo(name: string, value: number, amount: number): void {
         if (value === undefined || value < amount) {
             this.errors.push(`${name} must be greater or equal to ${amount}.`);

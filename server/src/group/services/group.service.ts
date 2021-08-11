@@ -79,17 +79,14 @@ export class GroupService {
         user = await this.userRepository.findOne(user.id, {
             relations: ['group'],
         });
+
         user.assertIsInGroup();
         Group.validate(newGroup);
-        const currentGroup: Group = await this.groupRepository.findOne(
-            user.id,
-            {
-                relations: ['members'],
-            },
-        );
         delete newGroup.inventoryItems;
         delete newGroup.members;
         delete newGroup.id;
+
+        const currentGroup: Group = await this.groupRepository.findOne(user.id);
 
         newGroup = {
             ...user.group,
@@ -108,6 +105,8 @@ export class GroupService {
         let group: Group = user.group;
         user.group = null;
         this.userRepository.update(user.id, user);
+
+        //delete if no more members
         group = await this.groupRepository.findOne(group.id, {
             relations: ['members'],
         });

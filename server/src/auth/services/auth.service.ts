@@ -83,4 +83,12 @@ export class AuthService {
             token,
         };
     }
+
+    async getUserData(id: number): Promise<User> {
+        const user: User = await this.userRepository.findOne(id);
+        if (user === undefined) {
+            Validator.throwNotFound();
+        }
+        return user;
+    }
 }

@@ -42,33 +42,31 @@ export class InventoryService {
 
     async updateInventoryItem(
         id: number,
-        inventoryItem: InventoryItem,
+        newItem: InventoryItem,
         user: User,
     ): Promise<InventoryItem> {
         user = await this.userRepository.findOne(user.id, {
             relations: ['group'],
         });
-        InventoryItem.validate(inventoryItem);
+        InventoryItem.validate(newItem);
 
-        const item: InventoryItem = await this.inventoryItemRepository.findOne(
-            id,
-            {
-                relations: ['group', 'category'],
-            },
-        );
-        if (item === undefined) {
+        const oldItem: InventoryItem =
+            await this.inventoryItemRepository.findOne(id, {
+                relations: ['group'],
+            });
+        if (oldItem === undefined) {
             Validator.throwNotFound();
         }
 
-        this.assertItemIsInGroup(user, item);
-        delete inventoryItem.group;
-        delete inventoryItem.id;
-        inventoryItem = {
-            ...item,
-            ...inventoryItem,
+        this.assertItemIsInGroup(user, oldItem);
+        delete newItem.group;
+        delete newItem.id;
+        newItem = {
+            ...oldItem,
+            ...newItem,
         };
-        this.inventoryItemRepository.update(id, inventoryItem);
-        return inventoryItem;
+        this.inventoryItemRepository.update(id, newItem);
+        return newItem;
     }
 
     async deleteInventoryItem(id: number, user: User): Promise<InventoryItem> {

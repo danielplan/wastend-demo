@@ -49,7 +49,19 @@ export class User {
     static validate(user: User): void {
         const validation: Validator = new Validator();
         validation.assertLength('username', user.username, 3);
+        validation.assertRegex(
+            'username',
+            'can only contain letters and numbers',
+            user.username,
+            new RegExp('^[A-Za-z0-9]{3,}$'),
+        );
         validation.assertLength('password', user.password, 6);
+        validation.assertRegex(
+            'password',
+            "can't contain spaces",
+            user.password,
+            new RegExp('^[^\\s]{6,}$'),
+        );
         validation.assertExists('displayName', user.displayName);
         validation.throwErrors(HttpStatus.BAD_REQUEST);
     }
