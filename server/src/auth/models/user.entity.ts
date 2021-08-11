@@ -1,6 +1,12 @@
 import { Validator } from './../../validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, ManyToOne, PrimaryGeneratedColumn, Entity } from 'typeorm';
+import {
+    Column,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    Entity,
+    JoinColumn,
+} from 'typeorm';
 import { Group } from './group.entity';
 import { HttpStatus } from '@nestjs/common';
 

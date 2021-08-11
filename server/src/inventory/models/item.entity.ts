@@ -36,7 +36,7 @@ export class InventoryItem {
         description: 'The category of the inventory item',
         type: () => ItemCategory,
     })
-    category: ItemCategory;
+    category?: ItemCategory;
 
     @ManyToOne(() => Group, (groupEntity) => groupEntity.inventoryItems)
     @ApiProperty({

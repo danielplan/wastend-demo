@@ -48,17 +48,29 @@ export class InventoryController {
     @ApiOperation({ summary: 'Updates an inventory item', tags: ['Inventory'] })
     @ApiParam({ type: Number, name: 'id' })
     @ApiBody({ type: InventoryItem })
+    @UseGuards(JwtGuard)
+    @ApiBasicAuth('JWT')
     updateItem(
         @Param('id') id: number,
         @Body() inventoryItem: InventoryItem,
+        @Request() req,
     ): Promise<InventoryItem> {
-        return this.inventoryService.updateInventoryItem(id, inventoryItem);
+        return this.inventoryService.updateInventoryItem(
+            id,
+            inventoryItem,
+            req.user,
+        );
     }
 
     @Delete(':id')
     @ApiOperation({ summary: 'Deletes an inventory item', tags: ['Inventory'] })
     @ApiParam({ type: Number, name: 'id' })
-    deleteItem(@Param('id') id: number): Promise<InventoryItem> {
-        return this.inventoryService.deleteInventoryItem(id);
+    @UseGuards(JwtGuard)
+    @ApiBasicAuth('JWT')
+    deleteItem(
+        @Param('id') id: number,
+        @Request() req,
+    ): Promise<InventoryItem> {
+        return this.inventoryService.deleteInventoryItem(id, req.user);
     }
 }

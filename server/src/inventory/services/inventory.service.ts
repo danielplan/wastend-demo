@@ -30,7 +30,12 @@ export class InventoryService {
 
     getAllInventoryItems(user: User): Promise<InventoryItem[]> {
         if (user.group) {
-            return this.inventoryItemRepository.find({ group: user.group });
+            return this.inventoryItemRepository.find({
+                where: {
+                    group: user.group,
+                },
+                relations: ['category'],
+            });
         } else {
             Validator.throwErrors(
                 ['User has to be in a group'],
@@ -42,27 +47,53 @@ export class InventoryService {
     async updateInventoryItem(
         id: number,
         inventoryItem: InventoryItem,
+        user: User,
     ): Promise<InventoryItem> {
         InventoryItem.validate(inventoryItem);
-        try {
-            let item: InventoryItem =
-                await this.inventoryItemRepository.findOneOrFail(id);
-            item = { ...item, ...inventoryItem, id: parseInt(id.toString()) };
+
+        let item: InventoryItem = await this.inventoryItemRepository.findOne(
+            id,
+            {
+                relations: ['group', 'category'],
+            },
+        );
+        if (item === undefined) {
+            Validator.throwNotFound();
+        }
+
+        if (user.group && user.group.id === item.group.id) {
+            item = {
+                ...item,
+                ...inventoryItem,
+                id: parseInt(id.toString()),
+            };
             this.inventoryItemRepository.update(id, item);
             return item;
-        } catch (e) {
-            Validator.throwNotFound();
+        } else {
+            Validator.throwErrors(
+                ['This item is not in your group'],
+                HttpStatus.BAD_REQUEST,
+            );
         }
     }
 
-    async deleteInventoryItem(id: number): Promise<InventoryItem> {
-        try {
-            const item: InventoryItem =
-                await this.inventoryItemRepository.findOneOrFail(id);
+    async deleteInventoryItem(id: number, user: User): Promise<InventoryItem> {
+        const item: InventoryItem = await this.inventoryItemRepository.findOne(
+            id,
+            { relations: ['group'] },
+        );
+        if (item === undefined) {
+            Validator.throwNotFound();
+        }
+
+        if (user.group && item.group.id === user.group.id) {
             this.inventoryItemRepository.remove(item);
             return item;
-        } catch (e) {
-            Validator.throwNotFound();
+        } else {
+            Validator.throwErrors(
+                ['This item is not in your group'],
+                HttpStatus.BAD_REQUEST,
+            );
         }
     }
 }

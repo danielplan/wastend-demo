@@ -45,13 +45,13 @@ export class AuthService {
     }
 
     async validateLogin(username: string, password: string): Promise<User> {
-        const user: User = await this.userRepository
-            .createQueryBuilder()
-            .select('username, password')
-            .addSelect('groupId', 'group')
-            .where('username = :username', { username })
-            .getRawOne();
-        console.log(user);
+        const user: User = await this.userRepository.findOne(
+            { username },
+            {
+                select: ['id', 'username', 'password'],
+                relations: ['group'],
+            },
+        );
 
         if (user === undefined) {
             Validator.throwErrors(

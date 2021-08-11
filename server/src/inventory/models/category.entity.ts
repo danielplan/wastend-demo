@@ -21,7 +21,7 @@ export class ItemCategory {
         description: 'The inventory items of a group',
         type: () => [InventoryItem],
     })
-    inventoryItems: InventoryItem[];
+    inventoryItems?: InventoryItem[];
 
     static validate(category: ItemCategory): void {
         const validator: Validator = new Validator();
