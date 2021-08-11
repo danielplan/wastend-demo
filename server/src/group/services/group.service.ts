@@ -32,12 +32,17 @@ export class GroupService {
         });
         user.assertIsInGroup();
 
-        console.log(username);
         const addedUser: User = await this.userRepository.findOne({ username });
         if (addedUser === undefined) {
             Validator.throwErrors(
                 ['No user with that username found'],
                 HttpStatus.NOT_FOUND,
+            );
+        }
+        if (addedUser.group) {
+            Validator.throwErrors(
+                ['This user is already in a group'],
+                HttpStatus.BAD_REQUEST,
             );
         }
 
@@ -59,10 +64,56 @@ export class GroupService {
             );
         }
         Group.validate(group);
+
+        delete group.inventoryItems;
+        delete group.members;
+
         group = {
             ...group,
             members: [user],
         };
         return this.groupRepository.save(group);
+    }
+
+    async updateGroup(newGroup: Group, user: User): Promise<Group> {
+        user = await this.userRepository.findOne(user.id, {
+            relations: ['group'],
+        });
+        user.assertIsInGroup();
+        Group.validate(newGroup);
+        const currentGroup: Group = await this.groupRepository.findOne(
+            user.id,
+            {
+                relations: ['members'],
+            },
+        );
+        delete newGroup.inventoryItems;
+        delete newGroup.members;
+        delete newGroup.id;
+
+        newGroup = {
+            ...user.group,
+            ...newGroup,
+        };
+        this.groupRepository.update(currentGroup.id, newGroup);
+        return newGroup;
+    }
+
+    async leaveGroup(user: User): Promise<Group> {
+        user = await this.userRepository.findOne(user.id, {
+            relations: ['group'],
+        });
+        user.assertIsInGroup();
+
+        let group: Group = user.group;
+        user.group = null;
+        this.userRepository.update(user.id, user);
+        group = await this.groupRepository.findOne(group.id, {
+            relations: ['members'],
+        });
+        if (!group.members || group.members.length === 0) {
+            await this.groupRepository.delete(group.id);
+        }
+        return group;
     }
 }

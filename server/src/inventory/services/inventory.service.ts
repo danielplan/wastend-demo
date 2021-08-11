@@ -50,7 +50,7 @@ export class InventoryService {
         });
         InventoryItem.validate(inventoryItem);
 
-        let item: InventoryItem = await this.inventoryItemRepository.findOne(
+        const item: InventoryItem = await this.inventoryItemRepository.findOne(
             id,
             {
                 relations: ['group', 'category'],
@@ -61,14 +61,14 @@ export class InventoryService {
         }
 
         this.assertItemIsInGroup(user, item);
-        item = {
+        delete inventoryItem.group;
+        delete inventoryItem.id;
+        inventoryItem = {
             ...item,
             ...inventoryItem,
-            group: item.group,
-            id: parseInt(id.toString()),
         };
-        this.inventoryItemRepository.update(id, item);
-        return item;
+        this.inventoryItemRepository.update(id, inventoryItem);
+        return inventoryItem;
     }
 
     async deleteInventoryItem(id: number, user: User): Promise<InventoryItem> {
