@@ -12,9 +12,10 @@ class PageWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(text: name, icon: icon),
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),
-        child: body,
+      body: SingleChildScrollView(
+        child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),
+            child: body),
       ),
       backgroundColor: Theme.of(context).backgroundColor,
     );

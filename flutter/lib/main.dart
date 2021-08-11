@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wastend/widgets/layout/AppWrapper.dart';
+import 'package:wastend/api/Auth.dart';
+import 'package:wastend/pages/SplashScreen.dart';
 import 'abstract/themes.dart';
 
 void main() {
@@ -20,14 +21,16 @@ class _AppState extends State<App> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Groceries List',
+        title: 'wastend',
         debugShowCheckedModeBanner: false,
         theme: CustomTheme.lightTheme,
         darkTheme: CustomTheme.darkTheme,
         themeMode: currentTheme.currentTheme,
-        home: AppWrapper());
+        home: SplashScreen());
   }
 }

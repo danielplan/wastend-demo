@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wastend/api/Auth.dart';
 import '/abstract/themes.dart';
 
 class CustomAppBar extends AppBar {
@@ -23,11 +24,13 @@ class CustomAppBar extends AppBar {
   }
 
   ShapeBorder shape = RoundedRectangleBorder(
+      side: BorderSide(color: CustomTheme.secondaryColor, width: 10.0),
       borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)));
   double elevation = 5;
   Color foregroundColor = CustomTheme.white;
   bool centerTitle = true;
+  IconThemeData iconTheme = IconThemeData(color: CustomTheme.white);
   Color shadowColor = CustomTheme.secondaryColor.withOpacity(0.15);
   Color backgroundColor = CustomTheme.secondaryColor;
   List<Widget> actions = [
@@ -36,6 +39,12 @@ class CustomAppBar extends AppBar {
         currentTheme.toggleTheme();
       },
       icon: Icon(Icons.light_mode, size: 32.0, color: CustomTheme.light),
+    ),
+    IconButton(
+      onPressed: () {
+        Auth.logout();
+      },
+      icon: Icon(Icons.logout, size: 32.0, color: CustomTheme.light),
     )
   ];
 }

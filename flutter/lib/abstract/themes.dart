@@ -26,11 +26,40 @@ class CustomTheme with ChangeNotifier {
         primaryColorDark: secondaryColor,
         backgroundColor: light,
         bottomAppBarColor: white,
+        buttonColor: primaryColor,
+        fixTextFieldOutlineLabel: true,
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+              foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (states) => primaryColor),
+              textStyle: MaterialStateProperty.resolveWith<TextStyle>(
+                  (states) => TextStyle(color: primaryColor, fontSize: 16.0, fontWeight: FontWeight.bold))),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+            fillColor: white,
+            filled: true,
+            labelStyle: TextStyle(color: black),
+            border: InputBorder.none,
+            contentPadding:
+                EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0)),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (states) => primaryColor),
+                shadowColor: MaterialStateProperty.resolveWith<Color>(
+                    (states) => primaryColor),
+                elevation:
+                    MaterialStateProperty.resolveWith<double>((states) => 1),
+                padding: MaterialStateProperty.resolveWith<EdgeInsets>(
+                    (states) => EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 30.0)))),
         textTheme: TextTheme(
             headline1: TextStyle(
                 color: dark, fontSize: 36.0, fontWeight: FontWeight.bold),
             bodyText1: TextStyle(color: dark, fontSize: 16.0, height: 1.8),
-            bodyText2: TextStyle(color: dark, fontSize: 14.0)),
+            bodyText2: TextStyle(color: dark, fontSize: 14.0),
+            button: TextStyle(
+                color: white, fontSize: 18.0, fontWeight: FontWeight.bold)),
         fontFamily: 'Quicksand',
         iconTheme: IconThemeData(
           color: dark,
@@ -41,6 +70,8 @@ class CustomTheme with ChangeNotifier {
     return lightTheme.copyWith(
         backgroundColor: black,
         bottomAppBarColor: dark,
+        inputDecorationTheme: lightTheme.inputDecorationTheme
+            .copyWith(fillColor: dark, labelStyle: TextStyle(color: white)),
         textTheme: lightTheme.textTheme.copyWith(
             headline1: lightTheme.textTheme.headline1!.copyWith(color: white),
             bodyText1: lightTheme.textTheme.bodyText1!.copyWith(color: white),
