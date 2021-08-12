@@ -14,7 +14,7 @@ class CustomAppBar extends AppBar {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(this.icon, size: 28.0, color: CustomTheme.white),
-          SizedBox(width: 10.0, height: 0.0),
+          SizedBox(width: 7),
           Text(this.text,
               style: new TextStyle(
                   color: CustomTheme.white,
@@ -23,10 +23,6 @@ class CustomAppBar extends AppBar {
         ]);
   }
 
-  ShapeBorder shape = RoundedRectangleBorder(
-      side: BorderSide(color: CustomTheme.secondaryColor, width: 10.0),
-      borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)));
   double elevation = 5;
   Color foregroundColor = CustomTheme.white;
   bool centerTitle = true;

@@ -4,7 +4,6 @@ import 'package:wastend/widgets/layout/PageWrapper.dart';
 import 'package:wastend/widgets/ui/TitleText.dart';
 
 class CreateInventoryItemPage extends StatelessWidget {
-  const CreateInventoryItemPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

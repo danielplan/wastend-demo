@@ -62,4 +62,10 @@ class Api {
     http.Response response = await http.put(uri, headers: await getHeader(), body: payload);
     return parseResponse(response);
   }
+
+  static Future<ApiResponse> apiDelete(String endpoint) async {
+    Uri uri = getUri(endpoint);
+    http.Response response = await http.delete(uri, headers: await getHeader());
+    return parseResponse(response);
+  }
 }

@@ -52,23 +52,26 @@ class _AppWrapperState extends State<AppWrapper> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: SingleChildScrollView(
-        child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),
-            child: tabs[_currentIndex]['page'])
-      ),
+          child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),
+              child: tabs[_currentIndex]['page'])),
       appBar: CustomAppBar(
           text: tabs[_currentIndex]['text'], icon: tabs[_currentIndex]['icon']),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => tabs[_currentIndex]['addPage']));
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => tabs[_currentIndex]['addPage']))
+              .then((result) {
+
+          });
         },
         child: Icon(Icons.add, size: 32.0),
         backgroundColor: Theme.of(context).primaryColor,

@@ -10,6 +10,7 @@ class HomePage extends StatelessWidget {
           title: 'Inventory',
           text:
               'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In egestas tellus enim magna pretium'),
+      SizedBox(height: 40),
       InventoryItemList(),
     ]);
   }
