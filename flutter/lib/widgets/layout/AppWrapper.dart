@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wastend/pages/inventory/CreateInventoryItemPage.dart';
 import '/widgets/layout/CustomAppBar.dart';
 import '/abstract/themes.dart';
 import '/pages/HomePage.dart';
@@ -15,7 +16,12 @@ class _AppWrapperState extends State<AppWrapper> {
   int _currentIndex = 0;
 
   final List<Map<String, dynamic>> tabs = [
-    {'page': HomePage(), 'icon': Icons.home, 'text': 'Home'},
+    {
+      'page': HomePage(),
+      'icon': Icons.home,
+      'text': 'Inventory',
+      'addPage': CreateInventoryItemPage()
+    },
     {'page': ListPage(), 'icon': Icons.checklist, 'text': 'List'},
     {'page': RecipesPage(), 'icon': Icons.restaurant_menu, 'text': 'Recipes'},
     {'page': MembersPage(), 'icon': Icons.group, 'text': 'Members'}
@@ -50,13 +56,20 @@ class _AppWrapperState extends State<AppWrapper> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: Padding(
-          padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),
-          child: tabs[_currentIndex]['page']),
+      body: SingleChildScrollView(
+        child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),
+            child: tabs[_currentIndex]['page'])
+      ),
       appBar: CustomAppBar(
           text: tabs[_currentIndex]['text'], icon: tabs[_currentIndex]['icon']),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => tabs[_currentIndex]['addPage']));
+        },
         child: Icon(Icons.add, size: 32.0),
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,

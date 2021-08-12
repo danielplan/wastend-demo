@@ -2,20 +2,13 @@ import { Validator } from '../../validator';
 import { InventoryItem } from '../../inventory/models/item.entity';
 import { User } from '../../auth/models/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { PrimaryGeneratedColumn, OneToMany, Entity, Column } from 'typeorm';
+import { PrimaryGeneratedColumn, OneToMany, Entity } from 'typeorm';
 import { HttpStatus } from '@nestjs/common';
 
 @Entity('group')
 export class Group {
     @PrimaryGeneratedColumn()
     id: number;
-
-    @Column()
-    @ApiProperty({
-        description: 'The name of the group',
-        type: String,
-    })
-    name: string;
 
     @OneToMany(() => User, (user) => user.group)
     @ApiProperty({
@@ -33,7 +26,6 @@ export class Group {
 
     static validate(group: Group): void {
         const validation: Validator = new Validator();
-        validation.assertExists('name', group.name);
         validation.throwErrors(HttpStatus.BAD_REQUEST);
     }
 }

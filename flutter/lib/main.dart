@@ -1,10 +1,7 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
-import 'package:wastend/api/Api.dart';
-import 'package:wastend/api/AuthApi.dart';
-import 'package:wastend/api/InventoryApi.dart';
 import 'package:wastend/pages/SplashScreen.dart';
 import 'abstract/themes.dart';
-
 void main() {
   runApp(App());
 }

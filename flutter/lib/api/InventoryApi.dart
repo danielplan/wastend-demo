@@ -1,22 +1,27 @@
+import 'dart:convert';
+
 import 'package:wastend/api/Api.dart';
 import 'package:wastend/api/ApiResponse.dart';
+import 'package:wastend/models/InventoryItem.dart';
 
 class InventoryApi {
-  static Future<ApiResponse> getAllItems() async {
-    return Api.apiGet('inventory');
+  static Future<List<InventoryItem>> getAllItems() async {
+    ApiResponse response = await Api.apiGet('inventory');
+    var data = response.data;
+    return data.map<InventoryItem>((item) {
+      new InventoryItem(
+          id: int.parse(item['id'].toString()),
+          name: item['name'],
+          amount: double.parse(item['amount'].toString()),
+          unit: item['unit']);
+    }).toList();
   }
 
-  static Future<ApiResponse> addItem({
-    required String name,
-    required double amount,
-    required String unit,
-    required int categoryId,
-  }) async {
+  static Future<ApiResponse> addItem(InventoryItem item) async {
     return Api.apiPost('inventory', {
-      'name': name,
-      'amount': amount,
-      'unit': unit,
-      'category': categoryId,
+      'name': item.name,
+      'amount': jsonEncode(item.amount),
+      'unit': item.unit,
     });
   }
 }
