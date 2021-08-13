@@ -3,7 +3,6 @@ import 'package:wastend/api/InventoryApi.dart';
 import 'package:wastend/models/InventoryItem.dart';
 import 'package:wastend/widgets/form/ErrorList.dart';
 import 'package:flutter/services.dart';
-import 'package:select_form_field/select_form_field.dart';
 
 class InventoryItemForm extends StatefulWidget {
 
@@ -13,16 +12,6 @@ class InventoryItemForm extends StatefulWidget {
 
 class _InventoryItemFormState extends State<InventoryItemForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final List<Map<String, dynamic>> units = [
-    {
-      'value': 'kg',
-      'label': 'Kilograms (kg)',
-    },
-    {
-      'value': 'l',
-      'label': 'Liters (l)',
-    }
-  ];
   List<String> _errors = [];
   String _name = '';
   double _amount = 0;
@@ -37,7 +26,7 @@ class _InventoryItemFormState extends State<InventoryItemForm> {
           children: <Widget>[
             ErrorList(errors: _errors),
             TextFormField(
-              decoration: new InputDecoration(labelText: 'name of the item'),
+              decoration: new InputDecoration(labelText: 'Name'),
               style: Theme.of(context).textTheme.bodyText1,
               onSaved: (value) => _name = value ?? '',
             ),
@@ -49,12 +38,10 @@ class _InventoryItemFormState extends State<InventoryItemForm> {
                 onSaved: (value) => _amount =
                     value == null || value == '' ? 0 : double.parse(value)),
             SizedBox(height: 10.0),
-            SelectFormField(
-                initialValue: 'kg',
-                labelText: 'Unit',
-                items: units,
+            TextFormField(
+                decoration: new InputDecoration(labelText: 'Unit'),
                 style: Theme.of(context).textTheme.bodyText1,
-                onSaved: (value) => _unit = value),
+                onSaved: (value) => _unit = value ?? ''),
             SizedBox(
               height: 20.0,
             ),

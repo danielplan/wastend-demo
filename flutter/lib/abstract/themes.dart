@@ -44,6 +44,16 @@ class CustomTheme with ChangeNotifier {
   static ThemeData get lightTheme {
     return ThemeData(
         primaryColor: primaryColor,
+        snackBarTheme: SnackBarThemeData(
+          backgroundColor: secondaryColor,
+          contentTextStyle: new TextStyle(color: white, fontSize: 16)
+        ),
+        popupMenuTheme: PopupMenuThemeData(
+          color: light,
+          elevation: 3,
+          textStyle: TextStyle(color: dark, fontSize: 16.0),
+        ),
+        toggleableActiveColor: primaryColor,
         primaryColorDark: secondaryColor,
         backgroundColor: light,
         bottomAppBarColor: white,

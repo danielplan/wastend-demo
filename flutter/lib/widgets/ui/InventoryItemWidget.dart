@@ -55,7 +55,7 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                               'Edit ${item.name}',
                               style: Theme.of(context).textTheme.headline2,
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 20),
                             Material(
                               child: Form(
                                   key: _formKey,
@@ -98,7 +98,19 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                                 },
                                 child: Text('Update amount')),
                             SizedBox(height: 10),
-                            ElevatedButton(
+                            Divider(),
+                            SizedBox(height: 10),
+                            ElevatedButton.icon(
+                                onPressed: () {
+                                  _formKey.currentState!.save();
+                                  InventoryApi.deleteItem(item.id ?? 0)
+                                      .then((success) {
+                                  });
+                                },
+                                label: const Text('Mark as "to buy"'),
+                                icon: new Icon(Icons.add)),
+                            SizedBox(height: 10),
+                            ElevatedButton.icon(
                                 style: Theme.of(context)
                                     .elevatedButtonTheme
                                     .style!
@@ -106,6 +118,7 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                                         backgroundColor:
                                             MaterialStateProperty.resolveWith(
                                                 (states) => CustomTheme.red)),
+
                                 onPressed: () {
                                   _formKey.currentState!.save();
                                   InventoryApi.deleteItem(item.id ?? 0)
@@ -120,7 +133,8 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                                     Navigator.of(context).pop();
                                   });
                                 },
-                                child: Text('Delete item'))
+                                label: const Text('Delete'),
+                                icon: new Icon(Icons.delete))
                           ],
                         ),
                       ),
