@@ -13,18 +13,19 @@ class InventoryItemList extends StatefulWidget {
 class _InventoryItemListState extends State<InventoryItemList> {
   List<InventoryItem>? _items;
 
-  Future<void> getInventoryItems() async {
-    List<InventoryItem> items = await InventoryApi.getAllItems();
-    setState(() {
-      _items = items;
-    });
+  @override
+  void initState() {
+    super.initState();
+    if (_items == null) {
+      InventoryApi.getAllItems()
+          .then((items) => setState(() => _items = items));
+    }
   }
+
+  Future<void> getInventoryItems() async {}
 
   @override
   Widget build(BuildContext context) {
-    if (_items == null) {
-      this.getInventoryItems();
-    }
     return _items == null
         ? Text('Loading')
         : (_items != null && _items!.length > 0
@@ -38,12 +39,10 @@ class _InventoryItemListState extends State<InventoryItemList> {
                     crossAxisCount: 2,
                     children: _items!
                         .map((item) => InventoryItemWidget(
+                            key: new UniqueKey(),
                             item: item,
-                            onDelete: () {
-                              setState(() {
-                                _items = null;
-                              });
-                            }))
+                            onDelete: () =>
+                                setState(() => _items!.remove(item))))
                         .toList())
               ])
             : Text('No items found'));

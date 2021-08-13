@@ -6,7 +6,7 @@ class AuthApi {
     ApiResponse response = await Api.apiPost(
         'auth/login', {'username': username, 'password': password});
     if (response.success) {
-      Api.STORAGE.write(key: 'token', value: response.data['token']);
+      await Api.STORAGE.write(key: 'token', value: response.data['token']);
     }
     return response;
   }
@@ -19,7 +19,7 @@ class AuthApi {
       'displayName': displayName
     });
     if (response.success) {
-      Api.STORAGE.write(key: 'token', value: response.data['token']);
+      await Api.STORAGE.write(key: 'token', value: response.data['token']);
     }
     return response;
   }

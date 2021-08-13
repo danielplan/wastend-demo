@@ -5,6 +5,10 @@ import 'package:wastend/widgets/layout/PageWrapper.dart';
 import '/widgets/ui/TitleText.dart';
 
 class LoginPage extends StatelessWidget {
+  final void Function() onLogin;
+
+  LoginPage({required this.onLogin});
+
   @override
   Widget build(BuildContext context) {
     return new PageWrapper(
@@ -13,7 +17,7 @@ class LoginPage extends StatelessWidget {
         body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           new TitleText(title: 'Login', text: 'Get started now'),
           SizedBox(height: 25.0),
-          new LoginForm(),
+          new LoginForm(onLogin: onLogin),
           new TextButton(
               onPressed: () {
                 Navigator.push(context,

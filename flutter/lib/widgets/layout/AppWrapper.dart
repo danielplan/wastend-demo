@@ -8,12 +8,19 @@ import '/pages/RecipesPage.dart';
 import '/pages/MembersPage.dart';
 
 class AppWrapper extends StatefulWidget {
+  final void Function() onChange;
+
+  AppWrapper({required this.onChange});
+
   @override
-  _AppWrapperState createState() => _AppWrapperState();
+  _AppWrapperState createState() => _AppWrapperState(onChange: onChange);
 }
 
 class _AppWrapperState extends State<AppWrapper> {
   int _currentIndex = 0;
+  final void Function() onChange;
+
+  _AppWrapperState({required this.onChange});
 
   final List<Map<String, dynamic>> tabs = [
     {
@@ -52,7 +59,6 @@ class _AppWrapperState extends State<AppWrapper> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +68,8 @@ class _AppWrapperState extends State<AppWrapper> {
               padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),
               child: tabs[_currentIndex]['page'])),
       appBar: CustomAppBar(
-          text: tabs[_currentIndex]['text'], icon: tabs[_currentIndex]['icon']),
+          text: tabs[_currentIndex]['text'], icon: tabs[_currentIndex]['icon'], onChange: onChange,),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -70,7 +77,7 @@ class _AppWrapperState extends State<AppWrapper> {
                   MaterialPageRoute(
                       builder: (context) => tabs[_currentIndex]['addPage']))
               .then((result) {
-
+                this.onChange();
           });
         },
         child: Icon(Icons.add, size: 32.0),

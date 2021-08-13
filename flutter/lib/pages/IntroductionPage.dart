@@ -4,7 +4,8 @@ import 'package:wastend/widgets/layout/PageWrapper.dart';
 import 'package:wastend/widgets/ui/TitleText.dart';
 
 class IntroductionPage extends StatelessWidget {
-  const IntroductionPage({Key? key}) : super(key: key);
+  final void Function() onChange;
+  IntroductionPage({required this.onChange});
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,7 @@ class IntroductionPage extends StatelessWidget {
                 child: ElevatedButton(
                     onPressed: () {
                       GroupApi.createGroup();
+                      this.onChange();
                     },
                     child: Text('Create a new group'))),
             SizedBox(height: 10.0),

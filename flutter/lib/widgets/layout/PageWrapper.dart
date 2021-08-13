@@ -11,7 +11,7 @@ class PageWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(text: name, icon: icon),
+      appBar: CustomAppBar(text: name, icon: icon, onChange: () => {},),
       body: SingleChildScrollView(
         child: Padding(
             padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),

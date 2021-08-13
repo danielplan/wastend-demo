@@ -3,12 +3,13 @@ import 'package:wastend/abstract/themes.dart';
 import 'package:wastend/api/InventoryApi.dart';
 import 'package:wastend/models/InventoryItem.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:wastend/widgets/form/ErrorList.dart';
 
 class InventoryItemWidget extends StatefulWidget {
   final InventoryItem item;
   final void Function() onDelete;
-  const InventoryItemWidget({required this.item, required this.onDelete});
+  final Key key;
+
+  const InventoryItemWidget({required this.item, required this.onDelete, required this.key});
 
   @override
   _InventoryItemWidgetState createState() =>
@@ -18,91 +19,120 @@ class InventoryItemWidget extends StatefulWidget {
 class _InventoryItemWidgetState extends State<InventoryItemWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   InventoryItem item;
-  List<String> _errors = [];
   final void Function() onDelete;
 
   _InventoryItemWidgetState({required this.item, required this.onDelete});
 
   void _quickEdit(BuildContext context) {
+    Key key = UniqueKey();
     showGeneralDialog(
-      barrierDismissible: true,
-      barrierLabel: 'close',
-      barrierColor: CustomTheme.black.withOpacity(0.75),
       transitionDuration: Duration(milliseconds: 400),
       context: context,
       pageBuilder: (context, anim1, anim2) {
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            height: 400,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Edit ${item.name}',
-                      style: Theme.of(context).textTheme.headline2,
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            primary: false,
+            body: Align(
+              alignment: Alignment.bottomCenter,
+              key: key,
+              child: GestureDetector(
+                onTap: () {},
+                child: PreferredSize(
+                  preferredSize: Size.fromHeight(400),
+                  child: Container(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 40, horizontal: 30),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'Edit ${item.name}',
+                              style: Theme.of(context).textTheme.headline2,
+                            ),
+                            SizedBox(height: 10),
+                            Material(
+                              child: Form(
+                                  key: _formKey,
+                                  child: TextFormField(
+                                      decoration: new InputDecoration(
+                                          labelText: 'Amount',
+                                          suffixText: this.item.unit),
+                                      style:
+                                          Theme.of(context).textTheme.bodyText1,
+                                      keyboardType: TextInputType.number,
+                                      initialValue: item.amount.toString(),
+                                      onSaved: (value) => item.amount =
+                                          value == null || value == ''
+                                              ? 0
+                                              : double.parse(value))),
+                            ),
+                            SizedBox(height: 10),
+                            ElevatedButton(
+                                onPressed: () {
+                                  double oldAmount = item.amount;
+                                  _formKey.currentState!.save();
+                                  InventoryApi.updateItem(item)
+                                      .then((response) {
+                                    if (response.errors != null) {
+                                      final snackBar = SnackBar(
+                                        content: Text(response.errors!.join((', '))),
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
+                                    }
+                                    if (response.success) {
+                                      Navigator.of(context).pop();
+                                      setState(() {});
+                                    } else {
+                                      setState(() {
+                                        item.amount = oldAmount;
+                                      });
+                                    }
+                                  });
+                                },
+                                child: Text('Update amount')),
+                            SizedBox(height: 10),
+                            ElevatedButton(
+                                style: Theme.of(context)
+                                    .elevatedButtonTheme
+                                    .style!
+                                    .copyWith(
+                                        backgroundColor:
+                                            MaterialStateProperty.resolveWith(
+                                                (states) => CustomTheme.red)),
+                                onPressed: () {
+                                  _formKey.currentState!.save();
+                                  InventoryApi.deleteItem(item.id ?? 0)
+                                      .then((success) {
+                                    this.onDelete();
+                                    final snackBar = SnackBar(
+                                      content: Text(
+                                          'Deleted ${item.name}'),
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                    Navigator.of(context).pop();
+                                  });
+                                },
+                                child: Text('Delete item'))
+                          ],
+                        ),
+                      ),
                     ),
-                    SizedBox(height: 10),
-                    ErrorList(errors: _errors),
-                    Material(
-                      child: Form(
-                          key: _formKey,
-                          child: TextFormField(
-                              decoration:
-                                  new InputDecoration(labelText: 'Amount'),
-                              style: Theme.of(context).textTheme.bodyText1,
-                              keyboardType: TextInputType.number,
-                              initialValue: item.amount.toString(),
-                              onSaved: (value) => item.amount =
-                                  value == null || value == ''
-                                      ? 0
-                                      : double.parse(value))),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).backgroundColor,
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(25)),
                     ),
-                    SizedBox(height: 10),
-                    ElevatedButton(
-                        onPressed: () {
-                          _formKey.currentState!.save();
-                          InventoryApi.updateItem(item).then((response) {
-                            if (response.success) {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                item.amount = item.amount;
-                              });
-                            } else if (response.errors != null) {
-                              setState(() {
-                                _errors = response.errors!;
-                              });
-                            }
-                          });
-                        },
-                        child: Text('Update amount')),
-                    SizedBox(height: 10),
-                    ElevatedButton(
-                        style: Theme.of(context)
-                            .elevatedButtonTheme
-                            .style!
-                            .copyWith(
-                                backgroundColor:
-                                    MaterialStateProperty.resolveWith(
-                                        (states) => CustomTheme.red)),
-                        onPressed: () {
-                          _formKey.currentState!.save();
-                          InventoryApi.deleteItem(item.id ?? 0).then((success) {
-                            this.onDelete();
-                            Navigator.of(context).pop();
-                          });
-                        },
-                        child: Text('Delete item'))
-                  ],
+                  ),
                 ),
               ),
-            ),
-            decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
             ),
           ),
         );

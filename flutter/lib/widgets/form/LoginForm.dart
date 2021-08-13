@@ -3,13 +3,19 @@ import 'package:wastend/api/AuthApi.dart';
 import 'package:wastend/widgets/form/ErrorList.dart';
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({Key? key}) : super(key: key);
+  final void Function() onLogin;
+
+  LoginForm({required this.onLogin});
 
   @override
-  _LoginFormState createState() => _LoginFormState();
+  _LoginFormState createState() => _LoginFormState(onLogin: onLogin);
 }
 
 class _LoginFormState extends State<LoginForm> {
+  final void Function() onLogin;
+
+  _LoginFormState({required this.onLogin});
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   List<String> _errors = [];
   String _username = '';
@@ -52,6 +58,8 @@ class _LoginFormState extends State<LoginForm> {
                     setState(() {
                       _errors = response.errors!;
                     });
+                  } else {
+                    this.onLogin();
                   }
                 });
               },
