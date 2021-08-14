@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wastend/api/InventoryApi.dart';
 import 'package:wastend/models/InventoryItem.dart';
 import 'package:wastend/widgets/ui/InventoryItemWidget.dart';
+import 'package:wastend/widgets/ui/Loading.dart';
 
 class InventoryItemList extends StatefulWidget {
   const InventoryItemList({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class _InventoryItemListState extends State<InventoryItemList> {
   @override
   Widget build(BuildContext context) {
     return _items == null
-        ? Text('Loading')
+        ? Loading()
         : (_items != null && _items!.length > 0
             ? Column(children: [
                 GridView.count(

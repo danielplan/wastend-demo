@@ -4,6 +4,7 @@ import 'package:wastend/api/GroupApi.dart';
 import 'package:wastend/pages/IntroductionPage.dart';
 import 'package:wastend/pages/LoginPage.dart';
 import 'package:wastend/widgets/layout/AppWrapper.dart';
+import 'package:wastend/widgets/ui/Loading.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -22,25 +23,38 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void onChange() {
-      AuthApi.isLoggedIn().then((isLoggedIn) {
-        if (isLoggedIn) {
-          GroupApi.isInGroup().then((isInGroup)  {
-            setState(() {
-              _currentPage =
-              isInGroup ? AppWrapper(onChange: onChange) : IntroductionPage(
-                  onChange: onChange);
-            });
-          });
-        } else {
+    AuthApi.isLoggedIn().then((isLoggedIn) {
+      if (isLoggedIn) {
+        GroupApi.isInGroup().then((isInGroup) {
           setState(() {
-            _currentPage = LoginPage(onLogin: onChange,);
+            _currentPage = isInGroup
+                ? AppWrapper(onChange: onChange)
+                : IntroductionPage(onChange: onChange);
           });
-        }
+        });
+      } else {
+        setState(() {
+          _currentPage = LoginPage(
+            onLogin: onChange,
+          );
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return _currentPage ?? new Text('Loading');
+    return _currentPage ??
+        SafeArea(
+            child: Container(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).backgroundColor
+                ),
+                child: Center(
+                    child: Column(
+                      children: [
+                        Loading()
+                      ],
+                    ))));
   }
 }

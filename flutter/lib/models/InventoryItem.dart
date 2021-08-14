@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:wastend/abstract/themes.dart';
+
 class InventoryItem {
   int? id;
   String name;
@@ -8,6 +10,12 @@ class InventoryItem {
   double? minimumAmount;
   bool toBuy;
   int? categoryId;
+
+  static Map<ItemStatus, Map<String, dynamic>> status = {
+    ItemStatus.LOW: {'color': CustomTheme.red, 'text': 'low'},
+    ItemStatus.NORMAL: {'color': CustomTheme.green, 'text': 'medium'},
+    ItemStatus.HIGH: {'color': CustomTheme.purple, 'text': 'high'},
+  };
 
   InventoryItem(
       {this.id,
@@ -40,4 +48,19 @@ class InventoryItem {
       'toBuy': jsonEncode(this.toBuy)
     };
   }
+
+  Map<String, dynamic>? getStatus() {
+    if (this.minimumAmount == null) {
+      return null;
+    }
+    if (this.amount < this.minimumAmount!) {
+      return status[ItemStatus.LOW];
+    } else if (this.minimumAmount! * 2 < this.amount) {
+      return status[ItemStatus.HIGH];
+    } else {
+      return status[ItemStatus.NORMAL];
+    }
+  }
 }
+
+enum ItemStatus { LOW, NORMAL, HIGH }

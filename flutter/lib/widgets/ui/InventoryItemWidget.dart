@@ -3,6 +3,7 @@ import 'package:wastend/abstract/themes.dart';
 import 'package:wastend/api/InventoryApi.dart';
 import 'package:wastend/models/InventoryItem.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:wastend/widgets/ui/Tag.dart';
 
 class InventoryItemWidget extends StatefulWidget {
   final InventoryItem item;
@@ -53,7 +54,7 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
-                              'Edit ${item.name}',
+                              item.name,
                               style: Theme.of(context).textTheme.headline2,
                             ),
                             SizedBox(height: 20),
@@ -107,8 +108,7 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                                   item.toBuy = !item.toBuy;
                                   InventoryApi.updateItem(item)
                                       .then((response) {
-                                    setState(() {
-                                    });
+                                    setState(() {});
                                     final snackBar = SnackBar(
                                       content: Text(item.toBuy
                                           ? 'Marked ${item.name} as "to buy"'
@@ -122,7 +122,7 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                                 label: Text(item.toBuy
                                     ? 'Unmark as "to buy"'
                                     : 'Mark as "to buy"'),
-                                icon: new Icon(Icons.add)),
+                                icon: new Icon(Icons.sell)),
                             SizedBox(height: 10),
                             ElevatedButton.icon(
                                 style: Theme.of(context)
@@ -172,6 +172,16 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
     );
   }
 
+  Widget _getTag() {
+    Map<String, dynamic>? status = item.getStatus();
+    if (status == null) {
+      return SizedBox(height: 0, width: 0);
+    }
+    return Container(
+        transform: Matrix4.translationValues(0, -10, 0),
+        child: Tag(color: status['color'], text: status['text']));
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -186,56 +196,63 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                       blurRadius: 25)
                 ],
                 color: Theme.of(context).bottomAppBarColor),
-            child: Stack(alignment: Alignment.bottomLeft, children: [
-              Container(
-                transform: Matrix4.translationValues(-10, 10, 0),
-                height: 45,
-                width: 45,
-                decoration: BoxDecoration(
-                  color: CustomTheme.primaryColor,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Icon(
-                  Icons.edit,
-                  color: CustomTheme.white,
-                ),
-              ),
-              Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            intl.NumberFormat("##.##").format(item.amount),
-                            style: TextStyle(
-                                fontSize: 20.0, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(width: 2),
-                          Text(
-                            item.unit.toUpperCase(),
-                            style: TextStyle(fontSize: 10),
-                          )
-                        ],
-                      )),
-                  Center(
-                      child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Text(
-                            item.name,
-                            textAlign: TextAlign.center,
-                            style: item.name.length > 5
-                                ? Theme.of(context)
-                                    .textTheme
-                                    .headline3!
-                                    .copyWith(fontSize: 20)
-                                : Theme.of(context).textTheme.headline3,
-                          )))
-                ],
-              ),
-            ])));
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                _getTag(),
+                Stack(alignment: Alignment.bottomLeft, children: [
+                  Container(
+                    transform: Matrix4.translationValues(-10, 10, 0),
+                    height: 45,
+                    width: 45,
+                    decoration: BoxDecoration(
+                      color: CustomTheme.primaryColor,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Icon(
+                      Icons.edit,
+                      color: CustomTheme.white,
+                    ),
+                  ),
+                  Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.all(15.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                intl.NumberFormat("##.##").format(item.amount),
+                                style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(width: 2),
+                              Text(
+                                item.unit.toUpperCase(),
+                                style: TextStyle(fontSize: 10),
+                              )
+                            ],
+                          )),
+                      Center(
+                          child: Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Text(
+                                item.name,
+                                textAlign: TextAlign.center,
+                                style: item.name.length > 5
+                                    ? Theme.of(context)
+                                        .textTheme
+                                        .headline3!
+                                        .copyWith(fontSize: 20)
+                                    : Theme.of(context).textTheme.headline3,
+                              )))
+                    ],
+                  ),
+                ])
+              ],
+            )));
   }
 }

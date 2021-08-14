@@ -20,11 +20,15 @@ class CustomTheme with ChangeNotifier {
   static const Color dark = Color(0xFF1A211F);
   static const Color black = Color(0xFF111514);
   static const Color red = Color(0xFFFF6161);
+  static const Color green = Color(0xFF61E896);
+  static const Color purple = Color(0xFF7B61FF);
 
   static MaterialColor createMaterialColor(Color color) {
     List strengths = <double>[.05];
     final swatch = <int, Color>{};
-    final int r = color.red, g = color.green, b = color.blue;
+    final int r = color.red,
+        g = color.green,
+        b = color.blue;
 
     for (int i = 1; i < 10; i++) {
       strengths.add(0.1 * i);
@@ -40,13 +44,13 @@ class CustomTheme with ChangeNotifier {
     });
     return MaterialColor(color.value, swatch);
   }
-  
+
   static ThemeData get lightTheme {
     return ThemeData(
         primaryColor: primaryColor,
         snackBarTheme: SnackBarThemeData(
-          backgroundColor: secondaryColor,
-          contentTextStyle: new TextStyle(color: white, fontSize: 16)
+            backgroundColor: secondaryColor,
+            contentTextStyle: new TextStyle(color: white, fontSize: 16)
         ),
         popupMenuTheme: PopupMenuThemeData(
           color: light,
@@ -69,7 +73,10 @@ class CustomTheme with ChangeNotifier {
               foregroundColor: MaterialStateProperty.resolveWith<Color>(
                       (states) => primaryColor),
               textStyle: MaterialStateProperty.resolveWith<TextStyle>(
-                  (states) => TextStyle(color: primaryColor, fontSize: 16.0, fontWeight: FontWeight.bold))),
+                      (states) =>
+                      TextStyle(color: primaryColor,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold))),
         ),
         inputDecorationTheme: InputDecorationTheme(
             fillColor: white,
@@ -78,20 +85,21 @@ class CustomTheme with ChangeNotifier {
             labelStyle: TextStyle(color: dark),
             border: InputBorder.none,
             contentPadding:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0)),
+            EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0)),
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                (states) => white),
+                foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (states) => white),
                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (states) => primaryColor),
+                        (states) => primaryColor),
                 shadowColor: MaterialStateProperty.resolveWith<Color>(
-                    (states) => primaryColor),
+                        (states) => primaryColor),
                 elevation:
-                    MaterialStateProperty.resolveWith<double>((states) => 1),
+                MaterialStateProperty.resolveWith<double>((states) => 1),
                 padding: MaterialStateProperty.resolveWith<EdgeInsets>(
-                    (states) => EdgeInsets.symmetric(
-                        vertical: 12.0, horizontal: 30.0)))),
+                        (states) =>
+                        EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 30.0)))),
         textTheme: TextTheme(
             headline1: TextStyle(
                 color: dark, fontSize: 36.0, fontWeight: FontWeight.bold),
@@ -114,7 +122,9 @@ class CustomTheme with ChangeNotifier {
         backgroundColor: black,
         bottomAppBarColor: dark,
         inputDecorationTheme: lightTheme.inputDecorationTheme
-            .copyWith(fillColor: dark, labelStyle: TextStyle(color: white), suffixStyle: TextStyle(color: white)),
+            .copyWith(fillColor: dark,
+            labelStyle: TextStyle(color: white),
+            suffixStyle: TextStyle(color: white)),
         textTheme: lightTheme.textTheme.copyWith(
             headline1: lightTheme.textTheme.headline1!.copyWith(color: white),
             headline2: lightTheme.textTheme.headline2!.copyWith(color: white),
