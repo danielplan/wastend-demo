@@ -3,7 +3,8 @@ import 'package:wastend/api/AuthApi.dart';
 import 'package:wastend/widgets/form/ErrorList.dart';
 
 class RegisterForm extends StatefulWidget {
-  const RegisterForm({Key? key}) : super(key: key);
+  final VoidCallback onChange;
+  RegisterForm({required this.onChange});
 
   @override
   _RegisterFormState createState() => _RegisterFormState();
@@ -71,6 +72,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   AuthApi.register(_username, _displayName, _password)
                       .then((response) {
                     if (response.success) {
+                      this.widget.onChange();
                       Navigator.of(context).pop();
                     } else {
                       setState(() {

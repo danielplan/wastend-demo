@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    getNewPage();
+    onChange();
   }
 
   void onChange() {
@@ -37,16 +37,6 @@ class _SplashScreenState extends State<SplashScreen> {
           });
         }
     });
-  }
-
-  Future<void> getNewPage() async {
-    bool isLoggedIn = await AuthApi.isLoggedIn();
-    if (isLoggedIn) {
-      bool isInGroup = await GroupApi.isInGroup();
-      _currentPage = isInGroup ? AppWrapper(onChange: onChange) : IntroductionPage(onChange: onChange);
-    } else {
-      _currentPage = LoginPage(onLogin: onChange,);
-    }
   }
 
   @override

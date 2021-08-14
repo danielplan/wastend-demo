@@ -1,5 +1,6 @@
 import 'package:wastend/api/Api.dart';
 import 'package:wastend/api/ApiResponse.dart';
+import 'package:wastend/models/User.dart';
 
 class AuthApi {
   static Future<ApiResponse> login(String username, String password) async {
@@ -32,5 +33,10 @@ class AuthApi {
   static Future<bool> isLoggedIn() async {
     String? token = await Api.STORAGE.read(key: 'token');
     return token != null;
+  }
+
+  static Future<User> getCurrentUser() async {
+    ApiResponse response = await Api.apiGet('auth');
+    return User.fromJson(response.data);
   }
 }

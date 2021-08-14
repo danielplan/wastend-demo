@@ -21,7 +21,7 @@ class LoginPage extends StatelessWidget {
           new TextButton(
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RegisterPage()));
+                    MaterialPageRoute(builder: (context) => RegisterPage(onChange: this.onLogin,)));
               },
               child: Text('Or create a new account'))
         ]));

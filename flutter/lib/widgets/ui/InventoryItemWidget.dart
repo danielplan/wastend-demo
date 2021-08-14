@@ -9,7 +9,8 @@ class InventoryItemWidget extends StatefulWidget {
   final void Function() onDelete;
   final Key key;
 
-  const InventoryItemWidget({required this.item, required this.onDelete, required this.key});
+  const InventoryItemWidget(
+      {required this.item, required this.onDelete, required this.key});
 
   @override
   _InventoryItemWidgetState createState() =>
@@ -81,7 +82,8 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                                       .then((response) {
                                     if (response.errors != null) {
                                       final snackBar = SnackBar(
-                                        content: Text(response.errors!.join((', '))),
+                                        content:
+                                            Text(response.errors!.join((', '))),
                                       );
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(snackBar);
@@ -102,12 +104,24 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                             SizedBox(height: 10),
                             ElevatedButton.icon(
                                 onPressed: () {
-                                  _formKey.currentState!.save();
-                                  InventoryApi.deleteItem(item.id ?? 0)
-                                      .then((success) {
+                                  item.toBuy = !item.toBuy;
+                                  InventoryApi.updateItem(item)
+                                      .then((response) {
+                                    setState(() {
+                                    });
+                                    final snackBar = SnackBar(
+                                      content: Text(item.toBuy
+                                          ? 'Marked ${item.name} as "to buy"'
+                                          : 'Unmarked ${item.name} as "to buy"'),
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                    Navigator.of(context).pop();
                                   });
                                 },
-                                label: const Text('Mark as "to buy"'),
+                                label: Text(item.toBuy
+                                    ? 'Unmark as "to buy"'
+                                    : 'Mark as "to buy"'),
                                 icon: new Icon(Icons.add)),
                             SizedBox(height: 10),
                             ElevatedButton.icon(
@@ -118,15 +132,12 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                                         backgroundColor:
                                             MaterialStateProperty.resolveWith(
                                                 (states) => CustomTheme.red)),
-
                                 onPressed: () {
-                                  _formKey.currentState!.save();
                                   InventoryApi.deleteItem(item.id ?? 0)
                                       .then((success) {
                                     this.onDelete();
                                     final snackBar = SnackBar(
-                                      content: Text(
-                                          'Deleted ${item.name}'),
+                                      content: Text('Deleted ${item.name}'),
                                     );
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(snackBar);

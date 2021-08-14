@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:wastend/api/AuthApi.dart';
+import 'package:wastend/models/User.dart';
 import 'package:wastend/pages/inventory/CreateInventoryItemPage.dart';
 import '/widgets/layout/CustomAppBar.dart';
 import '/abstract/themes.dart';
 import '/pages/HomePage.dart';
-import '/pages/ListPage.dart';
-import '/pages/RecipesPage.dart';
 import '/pages/MembersPage.dart';
 
 class AppWrapper extends StatefulWidget {
@@ -19,6 +19,17 @@ class AppWrapper extends StatefulWidget {
 class _AppWrapperState extends State<AppWrapper> {
   int _currentIndex = 0;
   final void Function() onChange;
+  User? _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    AuthApi.getCurrentUser().then((user) {
+      setState(() {
+        _currentUser = user;
+      });
+    });
+  }
 
   _AppWrapperState({required this.onChange});
 
@@ -29,12 +40,10 @@ class _AppWrapperState extends State<AppWrapper> {
       'text': 'Inventory',
       'addPage': CreateInventoryItemPage()
     },
-    {'page': ListPage(), 'icon': Icons.checklist, 'text': 'List'},
-    {'page': RecipesPage(), 'icon': Icons.restaurant_menu, 'text': 'Recipes'},
     {'page': MembersPage(), 'icon': Icons.group, 'text': 'Members'}
   ];
 
-  Widget getCustomNavigationBar(BuildContext context) {
+  Widget _getBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
       backgroundColor: Theme.of(context).bottomAppBarColor,
       elevation: 0,
@@ -63,12 +72,15 @@ class _AppWrapperState extends State<AppWrapper> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
+      drawer: _getDrawer(context),
       body: SingleChildScrollView(
           child: Padding(
               padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),
               child: tabs[_currentIndex]['page'])),
       appBar: CustomAppBar(
-          text: tabs[_currentIndex]['text'], icon: tabs[_currentIndex]['icon'], onChange: onChange,),
+        text: tabs[_currentIndex]['text'],
+        icon: tabs[_currentIndex]['icon'],
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -77,7 +89,7 @@ class _AppWrapperState extends State<AppWrapper> {
                   MaterialPageRoute(
                       builder: (context) => tabs[_currentIndex]['addPage']))
               .then((result) {
-                this.onChange();
+            this.onChange();
           });
         },
         child: Icon(Icons.add, size: 32.0),
@@ -99,8 +111,69 @@ class _AppWrapperState extends State<AppWrapper> {
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
             ),
-            child: getCustomNavigationBar(context)),
+            child: _getBottomNavigationBar(context)),
       ),
     );
+  }
+
+  Widget? _getDrawer(BuildContext context) {
+    return _currentUser != null ? Drawer(
+      child: Container(
+        decoration: BoxDecoration(color: Theme.of(context).bottomAppBarColor),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: CustomTheme.primaryColor,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Icon(Icons.person, color: CustomTheme.white, size: 48,),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Hello ${_currentUser!.displayName}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline3!
+                        .copyWith(color: CustomTheme.white),
+                  ),
+                  Text(
+                    '@${_currentUser!.username}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1!
+                        .copyWith(color: CustomTheme.white),
+                  )
+                ],
+              ),
+            ),
+            ListTile(
+              title: const Text('Change theme'),
+              horizontalTitleGap: 5,
+              leading: Icon(Icons.light,
+                  color: Theme.of(context).textTheme.bodyText1!.color),
+              onTap: () {
+                currentTheme.toggleTheme();
+              },
+            ),
+            ListTile(
+              title: const Text('Logout'),
+              horizontalTitleGap: 5,
+              leading: Icon(Icons.logout,
+                  color: Theme.of(context).textTheme.bodyText1!.color),
+              onTap: () {
+                AuthApi.logout().then((value) => this.onChange());
+              },
+            ),
+          ],
+        ),
+      ),
+    ) : null;
   }
 }

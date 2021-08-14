@@ -5,7 +5,6 @@ import 'package:wastend/widgets/form/ErrorList.dart';
 import 'package:flutter/services.dart';
 
 class InventoryItemForm extends StatefulWidget {
-
   @override
   _InventoryItemFormState createState() => _InventoryItemFormState();
 }
@@ -15,6 +14,7 @@ class _InventoryItemFormState extends State<InventoryItemForm> {
   List<String> _errors = [];
   String _name = '';
   double _amount = 0;
+  double? _minimumAmount;
   String _unit = '';
 
   @override
@@ -36,12 +36,19 @@ class _InventoryItemFormState extends State<InventoryItemForm> {
                 style: Theme.of(context).textTheme.bodyText1,
                 keyboardType: TextInputType.number,
                 onSaved: (value) => _amount =
-                    value == null || value == '' ? 0 : double.parse(value)),
+                    value == null || value == '' ? -1 : double.parse(value)),
             SizedBox(height: 10.0),
             TextFormField(
                 decoration: new InputDecoration(labelText: 'Unit'),
                 style: Theme.of(context).textTheme.bodyText1,
                 onSaved: (value) => _unit = value ?? ''),
+            SizedBox(height: 10.0),
+            TextFormField(
+                decoration: new InputDecoration(labelText: 'Minimum amount'),
+                style: Theme.of(context).textTheme.bodyText1,
+                keyboardType: TextInputType.number,
+                onSaved: (value) => _minimumAmount =
+                    value == null || value == '' ? null : double.parse(value)),
             SizedBox(
               height: 20.0,
             ),
@@ -50,7 +57,11 @@ class _InventoryItemFormState extends State<InventoryItemForm> {
               onPressed: () {
                 _formKey.currentState!.save();
                 InventoryItem item = new InventoryItem(
-                    name: _name, amount: _amount, unit: _unit);
+                    name: _name,
+                    amount: _amount,
+                    unit: _unit,
+                    toBuy: false,
+                    minimumAmount: _minimumAmount);
                 InventoryApi.addItem(item).then((response) {
                   if (response.success) {
                     Navigator.of(context).pop(item);

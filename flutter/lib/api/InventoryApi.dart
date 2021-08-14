@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:wastend/api/Api.dart';
 import 'package:wastend/api/ApiResponse.dart';
 import 'package:wastend/models/InventoryItem.dart';
@@ -9,28 +7,15 @@ class InventoryApi {
     ApiResponse response = await Api.apiGet('inventory');
     var data = response.data;
     return data
-        .map<InventoryItem>((item) => InventoryItem(
-            id: int.parse(item['id'].toString()),
-            name: item['name'],
-            amount: double.parse(item['amount'].toString()),
-            unit: item['unit']))
-        .toList();
+        .map<InventoryItem>((item) => InventoryItem.fromJson(item)).toList();
   }
 
   static Future<ApiResponse> addItem(InventoryItem item) async {
-    return Api.apiPost('inventory', {
-      'name': item.name,
-      'amount': jsonEncode(item.amount),
-      'unit': item.unit,
-    });
+    return Api.apiPost('inventory', item.toJson());
   }
 
   static Future<ApiResponse> updateItem(InventoryItem item) async {
-    return Api.apiPut('inventory/${item.id}', {
-      'name': item.name,
-      'amount': jsonEncode(item.amount),
-      'unit': item.unit,
-    });
+    return Api.apiPut('inventory/${item.id}', item.toJson());
   }
 
   static Future<bool> deleteItem(int id) async {

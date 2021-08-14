@@ -31,6 +31,20 @@ export class InventoryItem {
     })
     unit: string;
 
+    @Column()
+    @ApiProperty({
+        description: 'Minimum amount',
+        type: Number,
+    })
+    minimumAmount?: number;
+
+    @Column()
+    @ApiProperty({
+        description: 'To buy',
+        type: Boolean,
+    })
+    toBuy?: boolean;
+
     @ManyToOne(() => ItemCategory, (category) => category.inventoryItems)
     @ApiProperty({
         description: 'The category of the inventory item',

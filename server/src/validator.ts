@@ -7,7 +7,7 @@ export class Validator {
     }
 
     assertExists(name: string, element: any): void {
-        if (element === undefined) {
+        if (!element) {
             this.errors.push(`${name} must be given.`);
         }
     }

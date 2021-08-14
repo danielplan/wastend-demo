@@ -11,11 +11,11 @@ class CreateInventoryItemPage extends StatelessWidget {
         name: 'Inventory',
         icon: Icons.house,
         body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          new TitleText(
+          TitleText(
               title: 'Add a new item',
               text: 'Create a new item in your inventory'),
           SizedBox(height: 25.0),
-          new InventoryItemForm()
+          InventoryItemForm()
         ]));
   }
 }

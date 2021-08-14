@@ -73,8 +73,9 @@ class CustomTheme with ChangeNotifier {
         ),
         inputDecorationTheme: InputDecorationTheme(
             fillColor: white,
+            suffixStyle: TextStyle(color: dark),
             filled: true,
-            labelStyle: TextStyle(color: black),
+            labelStyle: TextStyle(color: dark),
             border: InputBorder.none,
             contentPadding:
                 EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0)),
@@ -113,7 +114,7 @@ class CustomTheme with ChangeNotifier {
         backgroundColor: black,
         bottomAppBarColor: dark,
         inputDecorationTheme: lightTheme.inputDecorationTheme
-            .copyWith(fillColor: dark, labelStyle: TextStyle(color: white)),
+            .copyWith(fillColor: dark, labelStyle: TextStyle(color: white), suffixStyle: TextStyle(color: white)),
         textTheme: lightTheme.textTheme.copyWith(
             headline1: lightTheme.textTheme.headline1!.copyWith(color: white),
             headline2: lightTheme.textTheme.headline2!.copyWith(color: white),
