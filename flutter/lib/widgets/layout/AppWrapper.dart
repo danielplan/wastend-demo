@@ -5,7 +5,7 @@ import 'package:wastend/pages/inventory/CreateInventoryItemPage.dart';
 import '/widgets/layout/CustomAppBar.dart';
 import '/abstract/themes.dart';
 import '/pages/HomePage.dart';
-import '/pages/MembersPage.dart';
+import '/pages/GroupPage.dart';
 
 class AppWrapper extends StatefulWidget {
   final void Function() onChange;
@@ -40,7 +40,7 @@ class _AppWrapperState extends State<AppWrapper> {
       'text': 'Inventory',
       'addPage': CreateInventoryItemPage()
     },
-    {'page': MembersPage(), 'icon': Icons.group, 'text': 'Members'}
+    {'page': GroupPage(), 'icon': Icons.group, 'text': 'Group'}
   ];
 
   Widget _getBottomNavigationBar(BuildContext context) {

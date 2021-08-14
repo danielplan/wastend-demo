@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wastend/widgets/ui/InventoryItemList.dart';
+import 'package:wastend/widgets/layout/InventoryItemList.dart';
 import '/widgets/ui/TitleText.dart';
 
 class HomePage extends StatelessWidget {
