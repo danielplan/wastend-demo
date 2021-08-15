@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wastend/api/AuthApi.dart';
 import 'package:wastend/models/User.dart';
+import 'package:wastend/pages/group/AddMemberPage.dart';
 import 'package:wastend/pages/inventory/CreateInventoryItemPage.dart';
 import '/widgets/layout/CustomAppBar.dart';
 import '/abstract/themes.dart';
@@ -40,7 +41,12 @@ class _AppWrapperState extends State<AppWrapper> {
       'text': 'Inventory',
       'addPage': CreateInventoryItemPage()
     },
-    {'page': GroupPage(), 'icon': Icons.group, 'text': 'Group'}
+    {
+      'page': GroupPage(),
+      'icon': Icons.group,
+      'text': 'Group',
+      'addPage': AddMemberPage()
+    }
   ];
 
   Widget _getBottomNavigationBar(BuildContext context) {
@@ -117,63 +123,70 @@ class _AppWrapperState extends State<AppWrapper> {
   }
 
   Widget? _getDrawer(BuildContext context) {
-    return _currentUser != null ? Drawer(
-      child: Container(
-        decoration: BoxDecoration(color: Theme.of(context).bottomAppBarColor),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: CustomTheme.primaryColor,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.start,
+    return _currentUser != null
+        ? Drawer(
+            child: Container(
+              decoration:
+                  BoxDecoration(color: Theme.of(context).bottomAppBarColor),
+              child: ListView(
+                padding: EdgeInsets.zero,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Icon(Icons.person, color: CustomTheme.white, size: 48,),
+                  DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: CustomTheme.primaryColor,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Icon(
+                            Icons.person,
+                            color: CustomTheme.white,
+                            size: 48,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'Hello ${_currentUser!.displayName}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline3!
+                              .copyWith(color: CustomTheme.white),
+                        ),
+                        Text(
+                          '@${_currentUser!.username}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(color: CustomTheme.white),
+                        )
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Hello ${_currentUser!.displayName}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(color: CustomTheme.white),
+                  ListTile(
+                    title: const Text('Change theme'),
+                    horizontalTitleGap: 5,
+                    leading: Icon(Icons.light,
+                        color: Theme.of(context).textTheme.bodyText1!.color),
+                    onTap: () {
+                      currentTheme.toggleTheme();
+                    },
                   ),
-                  Text(
-                    '@${_currentUser!.username}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(color: CustomTheme.white),
-                  )
+                  ListTile(
+                    title: const Text('Logout'),
+                    horizontalTitleGap: 5,
+                    leading: Icon(Icons.logout,
+                        color: Theme.of(context).textTheme.bodyText1!.color),
+                    onTap: () {
+                      AuthApi.logout().then((value) => this.onChange());
+                    },
+                  ),
                 ],
               ),
             ),
-            ListTile(
-              title: const Text('Change theme'),
-              horizontalTitleGap: 5,
-              leading: Icon(Icons.light,
-                  color: Theme.of(context).textTheme.bodyText1!.color),
-              onTap: () {
-                currentTheme.toggleTheme();
-              },
-            ),
-            ListTile(
-              title: const Text('Logout'),
-              horizontalTitleGap: 5,
-              leading: Icon(Icons.logout,
-                  color: Theme.of(context).textTheme.bodyText1!.color),
-              onTap: () {
-                AuthApi.logout().then((value) => this.onChange());
-              },
-            ),
-          ],
-        ),
-      ),
-    ) : null;
+          )
+        : null;
   }
 }
