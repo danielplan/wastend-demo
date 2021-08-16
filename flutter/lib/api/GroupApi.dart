@@ -26,4 +26,9 @@ class GroupApi {
   static Future<ApiResponse> addMember(String username) async {
     return await Api.apiPut('group/add/$username', {});
   }
+
+  static Future<bool> leaveGroup() async {
+    ApiResponse response = await Api.apiPatch('group/leave', {});
+    return response.success;
+  }
 }

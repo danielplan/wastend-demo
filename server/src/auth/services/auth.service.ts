@@ -95,4 +95,27 @@ export class AuthService {
         }
         return user;
     }
+
+    async updateUser(newUser: User, currentUserId: number): Promise<User> {
+        const currUser: User = await this.userRepository.findOne(currentUserId);
+        User.validate(newUser, !newUser.password);
+        console.log(newUser);
+
+        delete newUser.group;
+        delete newUser.id;
+        if (!newUser.password) {
+            delete newUser.password;
+        } else {
+            newUser.password = await this.hashPassword(newUser.password);
+        }
+
+        newUser = {
+            ...currUser,
+            ...newUser,
+        };
+        console.log(newUser);
+
+        this.userRepository.update(currUser.id, newUser);
+        return newUser;
+    }
 }

@@ -39,4 +39,12 @@ class AuthApi {
     ApiResponse response = await Api.apiGet('auth');
     return User.fromJson(response.data);
   }
+
+  static Future<ApiResponse> update(User user, String? password) async {
+    return await Api.apiPut('auth', {
+      'username': user.username,
+      'password': password,
+      'displayName': user.displayName
+    });
+  }
 }

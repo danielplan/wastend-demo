@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:wastend/api/AuthApi.dart';
+import 'package:wastend/models/User.dart';
 import 'package:wastend/widgets/form/ErrorList.dart';
 
 class RegisterForm extends StatefulWidget {
-  final VoidCallback onChange;
-  RegisterForm({required this.onChange});
+  final VoidCallback? onChange;
+  final User? user;
+
+  RegisterForm({this.onChange, this.user});
 
   @override
   _RegisterFormState createState() => _RegisterFormState();
@@ -29,16 +32,21 @@ class _RegisterFormState extends State<RegisterForm> {
           children: <Widget>[
             ErrorList(errors: _errors),
             TextFormField(
-              decoration: new InputDecoration(labelText: 'username'),
+              decoration: new InputDecoration(labelText: 'Username'),
               style: Theme.of(context).textTheme.bodyText1,
+              initialValue:
+                  this.widget.user != null ? this.widget.user!.username : null,
               onSaved: (value) {
                 _username = value ?? '';
               },
             ),
             SizedBox(height: 10.0),
             TextFormField(
-              decoration: new InputDecoration(labelText: 'display name'),
+              decoration: new InputDecoration(labelText: 'Display name'),
               style: Theme.of(context).textTheme.bodyText1,
+              initialValue: this.widget.user != null
+                  ? this.widget.user!.displayName
+                  : null,
               onSaved: (value) {
                 _displayName = value ?? '';
               },
@@ -69,17 +77,30 @@ class _RegisterFormState extends State<RegisterForm> {
               onPressed: () {
                 _formKey.currentState!.save();
                 if (_password == _password2) {
-                  AuthApi.register(_username, _displayName, _password)
-                      .then((response) {
-                    if (response.success) {
-                      this.widget.onChange();
-                      Navigator.of(context).pop();
-                    } else {
-                      setState(() {
-                        _errors = response.errors!;
-                      });
-                    }
-                  });
+                  if (this.widget.user == null) {
+                    AuthApi.register(_username, _displayName, _password)
+                        .then((response) {
+                      if (response.success && this.widget.onChange != null) {
+                        this.widget.onChange!();
+                        Navigator.of(context).pop();
+                      } else {
+                        setState(() {
+                          _errors = response.errors!;
+                        });
+                      }
+                    });
+                  } else {
+                    User _user = new User(username: _username, displayName: _displayName);
+                    AuthApi.update(_user, _password).then((response) {
+                      if (response.success) {
+                        Navigator.of(context).pop();
+                      } else {
+                        setState(() {
+                          _errors = response.errors!;
+                        });
+                      }
+                    });
+                  }
                 }
               },
               child: const Text('Create account'),

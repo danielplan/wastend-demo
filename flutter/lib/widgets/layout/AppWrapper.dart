@@ -3,6 +3,7 @@ import 'package:wastend/api/AuthApi.dart';
 import 'package:wastend/models/User.dart';
 import 'package:wastend/pages/group/AddMemberPage.dart';
 import 'package:wastend/pages/inventory/CreateInventoryItemPage.dart';
+import 'package:wastend/pages/user/EditUserPage.dart';
 import '/widgets/layout/CustomAppBar.dart';
 import '/abstract/themes.dart';
 import '/pages/HomePage.dart';
@@ -32,22 +33,24 @@ class _AppWrapperState extends State<AppWrapper> {
     });
   }
 
-  _AppWrapperState({required this.onChange});
+  List<Map<String, dynamic>>? tabs;
 
-  final List<Map<String, dynamic>> tabs = [
-    {
-      'page': HomePage(),
-      'icon': Icons.home,
-      'text': 'Inventory',
-      'addPage': CreateInventoryItemPage()
-    },
-    {
-      'page': GroupPage(),
-      'icon': Icons.group,
-      'text': 'Group',
-      'addPage': AddMemberPage()
-    }
-  ];
+  _AppWrapperState({required this.onChange}) {
+    tabs = [
+      {
+        'page': HomePage(),
+        'icon': Icons.home,
+        'text': 'Inventory',
+        'addPage': CreateInventoryItemPage()
+      },
+      {
+        'page': GroupPage(onLeave: this.onChange),
+        'icon': Icons.group,
+        'text': 'Group',
+        'addPage': AddMemberPage()
+      }
+    ];
+  }
 
   Widget _getBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
@@ -62,7 +65,7 @@ class _AppWrapperState extends State<AppWrapper> {
       unselectedLabelStyle:
           TextStyle(fontWeight: FontWeight.bold, fontSize: 13.0),
       selectedItemColor: Theme.of(context).primaryColor,
-      items: tabs
+      items: tabs!
           .map((tab) => BottomNavigationBarItem(
               label: tab['text'], icon: Icon(tab['icon'])))
           .toList(),
@@ -82,10 +85,10 @@ class _AppWrapperState extends State<AppWrapper> {
       body: SingleChildScrollView(
           child: Padding(
               padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),
-              child: tabs[_currentIndex]['page'])),
+              child: tabs![_currentIndex]['page'])),
       appBar: CustomAppBar(
-        text: tabs[_currentIndex]['text'],
-        icon: tabs[_currentIndex]['icon'],
+        text: tabs![_currentIndex]['text'],
+        icon: tabs![_currentIndex]['icon'],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
@@ -93,7 +96,7 @@ class _AppWrapperState extends State<AppWrapper> {
           Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => tabs[_currentIndex]['addPage']))
+                      builder: (context) => tabs![_currentIndex]['addPage']))
               .then((result) {
             this.onChange();
           });
@@ -182,6 +185,17 @@ class _AppWrapperState extends State<AppWrapper> {
                     onTap: () {
                       AuthApi.logout().then((value) => this.onChange());
                     },
+                  ),
+                  ListTile(
+                    title: const Text('Edit user'),
+                    horizontalTitleGap: 5,
+                    leading: Icon(Icons.logout,
+                        color: Theme.of(context).textTheme.bodyText1!.color),
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                EditUserPage(user: this._currentUser!))),
                   ),
                 ],
               ),

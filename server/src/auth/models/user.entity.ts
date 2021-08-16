@@ -37,7 +37,7 @@ export class User {
     })
     group?: Group;
 
-    assertIsInGroup() {
+    assertIsInGroup?() {
         if (!this.group) {
             Validator.throwErrors(
                 ['You are not in a group'],
@@ -46,7 +46,7 @@ export class User {
         }
     }
 
-    static validate(user: User): void {
+    static validate(user: User, isUpdate?: boolean): void {
         const validation: Validator = new Validator();
         validation.assertLength('username', user.username, 3);
         validation.assertRegex(
@@ -55,13 +55,15 @@ export class User {
             user.username,
             new RegExp('^[A-Za-z0-9]{3,}$'),
         );
-        validation.assertLength('password', user.password, 6);
-        validation.assertRegex(
-            'password',
-            "can't contain spaces",
-            user.password,
-            new RegExp('^[^\\s]{6,}$'),
-        );
+        if (!isUpdate) {
+            validation.assertLength('password', user.password, 6);
+            validation.assertRegex(
+                'password',
+                "can't contain spaces",
+                user.password,
+                new RegExp('^[^\\s]{6,}$'),
+            );
+        }
         validation.assertExists('displayName', user.displayName);
         validation.throwErrors(HttpStatus.BAD_REQUEST);
     }

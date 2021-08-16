@@ -8,6 +8,7 @@ import {
     Param,
     Request,
     UseGuards,
+    Put,
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { ApiBody, ApiOperation, ApiParam, ApiBasicAuth } from '@nestjs/swagger';
@@ -43,5 +44,13 @@ export class AuthController {
     @ApiOperation({ summary: 'Get current user data', tags: ['Auth'] })
     getCurrentData(@Request() req): Promise<User> {
         return this.authService.getUserData(req.user.id);
+    }
+
+    @Put()
+    @UseGuards(JwtGuard)
+    @ApiBasicAuth('JWT')
+    @ApiOperation({ summary: 'Update current user data', tags: ['Auth'] })
+    updateCurrentUser(@Body() user: User, @Request() req): Promise<User> {
+        return this.authService.updateUser(user, req.user.id);
     }
 }

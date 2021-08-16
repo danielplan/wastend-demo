@@ -3,6 +3,7 @@ import 'package:wastend/abstract/themes.dart';
 import 'package:wastend/api/InventoryApi.dart';
 import 'package:wastend/models/InventoryItem.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:wastend/pages/inventory/EditInventoryItemPage.dart';
 import 'package:wastend/widgets/ui/Tag.dart';
 
 class InventoryItemWidget extends StatefulWidget {
@@ -125,6 +126,15 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                                 icon: new Icon(Icons.sell)),
                             SizedBox(height: 10),
                             ElevatedButton.icon(
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditInventoryItemPage(item: item))),
+                                label: const Text('Edit'),
+                                icon: new Icon(Icons.edit)),
+                            SizedBox(height: 10),
+                            ElevatedButton.icon(
                                 style: Theme.of(context)
                                     .elevatedButtonTheme
                                     .style!
@@ -186,6 +196,10 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () => _quickEdit(context),
+        onLongPress: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditInventoryItemPage(item: item))),
         child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(25)),
