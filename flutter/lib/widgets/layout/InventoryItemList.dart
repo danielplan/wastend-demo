@@ -67,24 +67,16 @@ class _InventoryItemListState extends State<InventoryItemList> {
       (_items == null
           ? Loading()
           : (_items != null && _items!.length > 0
-              ? Column(children: [
-                  GridView.count(
-                      shrinkWrap: true,
-                      mainAxisSpacing: 30,
-                      crossAxisSpacing: 30,
-                      clipBehavior: Clip.none,
-                      primary: false,
-                      crossAxisCount: 2,
-                      children: _filteredItems!
-                          .map((item) => InventoryItemWidget(
-                              key: new UniqueKey(),
-                              item: item,
-                              onDelete: () => setState(() {
-                                    _items!.remove(item);
-                                    _filteredItems!.remove(item);
-                                  })))
-                          .toList())
-                ])
+              ? Column(
+                  children: _filteredItems!
+                      .map((item) => InventoryItemWidget(
+                          key: new UniqueKey(),
+                          item: item,
+                          onDelete: () => setState(() {
+                                _items!.remove(item);
+                                _filteredItems!.remove(item);
+                              })))
+                      .toList())
               : Text('No items found')))
     ]);
   }

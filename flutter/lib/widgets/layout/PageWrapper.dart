@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/widgets/layout/CustomAppBar.dart';
+import 'package:wastend/widgets/layout/AppWrapper.dart';
 
 class PageWrapper extends StatelessWidget {
   final String name;
@@ -11,10 +11,10 @@ class PageWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(text: name, icon: icon,),
+      appBar: AppWrapper.getAppbar(context),
       body: SingleChildScrollView(
         child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),
+            padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 25.0),
             child: body),
       ),
       backgroundColor: Theme.of(context).backgroundColor,

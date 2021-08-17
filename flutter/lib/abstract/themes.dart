@@ -13,12 +13,12 @@ class CustomTheme with ChangeNotifier {
     notifyListeners();
   }
 
-  static const Color primaryColor = Color(0xFF51E3AF);
-  static const Color secondaryColor = Color(0xFF59D0A5);
-  static const Color light = Color(0xFFF0FFFE);
-  static const Color white = Color(0xFFF9FFFE);
-  static const Color dark = Color(0xFF1A211F);
-  static const Color black = Color(0xFF111514);
+  static const Color primaryColor = Color(0xFF45E3E3);
+  static const Color secondaryColor = Color(0xFF49CACA);
+  static const Color light = Color(0xFFECF6F6);
+  static const Color white = Color(0xFFF8FFFF);
+  static const Color dark = Color(0xFF151E1E);
+  static const Color black = Color(0xFF0F1717);
   static const Color red = Color(0xFFFF6161);
   static const Color green = Color(0xFF61E896);
   static const Color purple = Color(0xFF7B61FF);
@@ -49,7 +49,7 @@ class CustomTheme with ChangeNotifier {
     return ThemeData(
         primaryColor: primaryColor,
         snackBarTheme: SnackBarThemeData(
-            backgroundColor: secondaryColor,
+            backgroundColor: primaryColor,
             contentTextStyle: new TextStyle(color: white, fontSize: 16)
         ),
         popupMenuTheme: PopupMenuThemeData(
@@ -59,11 +59,14 @@ class CustomTheme with ChangeNotifier {
         ),
         toggleableActiveColor: primaryColor,
         primaryColorDark: secondaryColor,
-        backgroundColor: light,
+        backgroundColor: white,
         bottomAppBarColor: white,
         buttonColor: primaryColor,
         splashColor: primaryColor,
         primarySwatch: createMaterialColor(primaryColor),
+        appBarTheme: AppBarTheme(
+          foregroundColor: dark,
+        ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           foregroundColor: white,
           splashColor: secondaryColor,
@@ -79,39 +82,42 @@ class CustomTheme with ChangeNotifier {
                           fontWeight: FontWeight.bold))),
         ),
         inputDecorationTheme: InputDecorationTheme(
-            fillColor: white,
+            fillColor: light,
             suffixStyle: TextStyle(color: dark),
             filled: true,
-            labelStyle: TextStyle(color: dark),
-            border: InputBorder.none,
+            labelStyle: const TextStyle(color: dark),
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(15)
+            ),
             contentPadding:
-            EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0)),
+            const EdgeInsets.symmetric(vertical: 17.5, horizontal: 25.0)),
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
                 foregroundColor: MaterialStateProperty.resolveWith<Color>(
                         (states) => white),
                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (states) => primaryColor),
-                shadowColor: MaterialStateProperty.resolveWith<Color>(
-                        (states) => primaryColor),
                 elevation:
-                MaterialStateProperty.resolveWith<double>((states) => 1),
+                MaterialStateProperty.resolveWith<double>((states) => 0),
                 padding: MaterialStateProperty.resolveWith<EdgeInsets>(
                         (states) =>
                         EdgeInsets.symmetric(
-                            vertical: 12.0, horizontal: 30.0)))),
+                            vertical: 20.0, horizontal: 40.0)))),
         textTheme: TextTheme(
             headline1: TextStyle(
                 color: dark, fontSize: 36.0, fontWeight: FontWeight.bold),
             headline2: TextStyle(
                 color: dark, fontSize: 28.0, fontWeight: FontWeight.bold),
             headline3: TextStyle(
-                color: dark, fontSize: 24.0, fontWeight: FontWeight.bold),
+                color: dark, fontSize: 22.0, fontWeight: FontWeight.bold),
+            headline4: TextStyle(
+                color: dark, fontSize: 18.0, fontWeight: FontWeight.bold),
             bodyText1: TextStyle(color: dark, fontSize: 16.0, height: 1.8),
             bodyText2: TextStyle(color: dark, fontSize: 14.0),
             button: TextStyle(
                 color: white, fontSize: 18.0, fontWeight: FontWeight.bold)),
-        fontFamily: 'Quicksand',
+        fontFamily: 'Montserrat',
         iconTheme: IconThemeData(
           color: dark,
         ));
@@ -121,6 +127,9 @@ class CustomTheme with ChangeNotifier {
     return lightTheme.copyWith(
         backgroundColor: black,
         bottomAppBarColor: dark,
+        appBarTheme: lightTheme.appBarTheme.copyWith(
+          foregroundColor: white
+        ),
         inputDecorationTheme: lightTheme.inputDecorationTheme
             .copyWith(fillColor: dark,
             labelStyle: TextStyle(color: white),
@@ -129,6 +138,7 @@ class CustomTheme with ChangeNotifier {
             headline1: lightTheme.textTheme.headline1!.copyWith(color: white),
             headline2: lightTheme.textTheme.headline2!.copyWith(color: white),
             headline3: lightTheme.textTheme.headline3!.copyWith(color: white),
+            headline4: lightTheme.textTheme.headline3!.copyWith(color: white),
             bodyText1: lightTheme.textTheme.bodyText1!.copyWith(color: white),
             bodyText2: lightTheme.textTheme.bodyText2!.copyWith(color: white)),
         iconTheme: IconThemeData(

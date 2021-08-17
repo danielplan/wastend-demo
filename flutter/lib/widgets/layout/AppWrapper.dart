@@ -4,7 +4,6 @@ import 'package:wastend/models/User.dart';
 import 'package:wastend/pages/group/AddMemberPage.dart';
 import 'package:wastend/pages/inventory/CreateInventoryItemPage.dart';
 import 'package:wastend/pages/user/EditUserPage.dart';
-import '/widgets/layout/CustomAppBar.dart';
 import '/abstract/themes.dart';
 import '/pages/HomePage.dart';
 import '/pages/GroupPage.dart';
@@ -16,6 +15,13 @@ class AppWrapper extends StatefulWidget {
 
   @override
   _AppWrapperState createState() => _AppWrapperState(onChange: onChange);
+
+  static PreferredSizeWidget getAppbar(BuildContext context) {
+    return AppBar(
+      backgroundColor: Theme.of(context).backgroundColor,
+      elevation: 0,
+    );
+  }
 }
 
 class _AppWrapperState extends State<AppWrapper> {
@@ -84,12 +90,9 @@ class _AppWrapperState extends State<AppWrapper> {
       drawer: _getDrawer(context),
       body: SingleChildScrollView(
           child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 25.0),
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25.0),
               child: tabs![_currentIndex]['page'])),
-      appBar: CustomAppBar(
-        text: tabs![_currentIndex]['text'],
-        icon: tabs![_currentIndex]['icon'],
-      ),
+      appBar: AppWrapper.getAppbar(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -108,13 +111,8 @@ class _AppWrapperState extends State<AppWrapper> {
       bottomNavigationBar: Container(
         padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
         decoration: BoxDecoration(
-            color: Theme.of(context).bottomAppBarColor,
-            borderRadius: BorderRadius.vertical(
-                top: Radius.circular(25.0), bottom: Radius.zero),
-            boxShadow: [
-              BoxShadow(
-                  color: CustomTheme.dark.withOpacity(0.05), blurRadius: 25.0)
-            ]),
+          color: Theme.of(context).bottomAppBarColor,
+        ),
         child: Theme(
             data: Theme.of(context).copyWith(
               splashColor: Colors.transparent,

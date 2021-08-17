@@ -12,9 +12,9 @@ class InventoryItem {
   int? categoryId;
 
   static Map<ItemStatus, Map<String, dynamic>> status = {
-    ItemStatus.LOW: {'color': CustomTheme.red, 'text': 'low'},
-    ItemStatus.NORMAL: {'color': CustomTheme.green, 'text': 'medium'},
-    ItemStatus.HIGH: {'color': CustomTheme.purple, 'text': 'high'},
+    ItemStatus.LOW: {'color': CustomTheme.red, 'coloredDots': 1},
+    ItemStatus.NORMAL: {'color': CustomTheme.green, 'coloredDots': 2},
+    ItemStatus.HIGH: {'color': CustomTheme.purple, 'coloredDots': 3},
   };
 
   InventoryItem(

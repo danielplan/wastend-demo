@@ -182,14 +182,69 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
     );
   }
 
-  Widget _getTag() {
+  Widget _getAmountDot(Color color) {
+    return Container(
+      width: 12,
+      height: 12,
+      margin: EdgeInsets.all(3),
+      decoration:
+          BoxDecoration(borderRadius: BorderRadius.circular(5), color: color),
+    );
+  }
+
+  List<Widget> _getAmountIndicatorList(status) {
+    List<Widget> _indicators = [];
+    int maxDots = 3;
+    for (int i = 0; i < maxDots - status['coloredDots']; i++) {
+      _indicators.add(_getAmountDot(Theme.of(this.context)
+          .textTheme
+          .bodyText1!
+          .color!
+          .withOpacity(0.15)));
+    }
+    for (int i = 0; i < status['coloredDots']; i++) {
+      _indicators.add(_getAmountDot(status['color']));
+    }
+    return _indicators;
+  }
+
+  Widget _getAmountIndicator() {
     Map<String, dynamic>? status = item.getStatus();
     if (status == null) {
       return SizedBox(height: 0, width: 0);
     }
+    return Row(children: _getAmountIndicatorList(status));
+  }
+
+  Widget _getCategoryIcon() {
+    Map<String, dynamic>? status = item.getStatus();
     return Container(
-        transform: Matrix4.translationValues(0, -10, 0),
-        child: Tag(color: status['color'], text: status['text']));
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        color: status != null ? status['color'] : CustomTheme.dark,
+      ),
+    );
+  }
+
+  String formatAmount(double amount) {
+    return intl.NumberFormat("##.##").format(amount);
+  }
+
+  Widget _getAmountText() {
+    return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+      Text(
+        '${formatAmount(item.amount)} ${item.unit}',
+        style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
+      ),
+      (item.minimumAmount != null
+          ? Text(
+              ' / ${formatAmount(item.minimumAmount!)} ${item.unit}',
+              style: TextStyle(fontSize: 12),
+            )
+          : SizedBox())
+    ]);
   }
 
   @override
@@ -201,72 +256,46 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
             MaterialPageRoute(
                 builder: (context) => EditInventoryItemPage(item: item))),
         child: Container(
+            padding: EdgeInsets.all(15),
+            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-                boxShadow: [
-                  new BoxShadow(
-                      offset: new Offset(0, 5.0),
-                      color: CustomTheme.black.withOpacity(0.05),
-                      blurRadius: 25)
-                ],
-                color: Theme.of(context).bottomAppBarColor),
-            child: Stack(
-              alignment: Alignment.topCenter,
-              children: [
-                _getTag(),
-                Stack(alignment: Alignment.bottomLeft, children: [
-                  Container(
-                    transform: Matrix4.translationValues(-10, 10, 0),
-                    height: 45,
-                    width: 45,
-                    decoration: BoxDecoration(
-                      color: CustomTheme.primaryColor,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: Icon(
-                      Icons.edit,
-                      color: CustomTheme.white,
-                    ),
-                  ),
-                  Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.all(15.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                borderRadius: BorderRadius.circular(15),
+                color: Theme.of(context).inputDecorationTheme.fillColor),
+            child: Stack(alignment: Alignment.topLeft, children: [
+              item.toBuy
+                  ? Container(
+                      child: Icon(Icons.sell, color: Theme.of(context).backgroundColor, size: 16),
+                      width: 30,
+                      height: 30,
+                      transform: Matrix4.translationValues(-20, -20, 0),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Theme.of(context).textTheme.bodyText1!.color),
+                    )
+                  : Container(),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                intl.NumberFormat("##.##").format(item.amount),
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(width: 2),
-                              Text(
-                                item.unit.toUpperCase(),
-                                style: TextStyle(fontSize: 10),
-                              )
-                            ],
-                          )),
-                      Center(
-                          child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Text(
-                                item.name,
-                                textAlign: TextAlign.center,
-                                style: item.name.length > 5
-                                    ? Theme.of(context)
-                                        .textTheme
-                                        .headline3!
-                                        .copyWith(fontSize: 20)
-                                    : Theme.of(context).textTheme.headline3,
-                              )))
-                    ],
-                  ),
-                ])
-              ],
-            )));
+                          _getCategoryIcon(),
+                          SizedBox(width: 20),
+                          Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(item.name,
+                                    style:
+                                        Theme.of(context).textTheme.headline4),
+                                SizedBox(height: 3),
+                                _getAmountText(),
+                              ])
+                        ])),
+                    _getAmountIndicator(),
+                  ]),
+            ])));
   }
 }

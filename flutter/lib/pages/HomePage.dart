@@ -7,10 +7,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       new TitleText(
-          title: 'Inventory',
-          text:
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In egestas tellus enim magna pretium'),
-      SizedBox(height: 40),
+          title: 'Inventory'
+      ),
+      SizedBox(height: 20),
       InventoryItemList(),
     ]);
   }
