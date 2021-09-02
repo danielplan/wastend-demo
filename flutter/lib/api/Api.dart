@@ -5,7 +5,7 @@ import 'package:wastend/api/ApiResponse.dart';
 import 'package:wastend/api/AuthApi.dart';
 
 class Api {
-  static const String URL = 'http://10.0.2.2:3000/api';
+  static const String URL = 'http://10.0.0.172:3001/api';
   static final STORAGE = new FlutterSecureStorage();
 
   static List<String> parseErrors(http.Response response) {

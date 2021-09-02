@@ -27,8 +27,6 @@ class _InventoryItemListState extends State<InventoryItemList> {
         ));
   }
 
-  Future<void> getInventoryItems() async {}
-
   @override
   Widget build(BuildContext context) {
     return Column(children: [

@@ -19,7 +19,17 @@ class AppWrapper extends StatefulWidget {
   static PreferredSizeWidget getAppbar(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).backgroundColor,
+      foregroundColor: Theme.of(context).textTheme.bodyText1!.color,
+      actionsIconTheme: Theme.of(context).iconTheme,
+      iconTheme: Theme.of(context).iconTheme,
       elevation: 0,
+      actions: [
+        IconButton(
+            onPressed: () {
+              currentTheme.toggleTheme();
+            },
+            icon: Icon(Icons.lightbulb))
+      ],
     );
   }
 }
@@ -149,31 +159,38 @@ class _AppWrapperState extends State<AppWrapper> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        Text(
-                          'Hello ${_currentUser!.displayName}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline3!
-                              .copyWith(color: CustomTheme.white),
+                        Flexible(
+                          child: Text(
+                            'Hello ${_currentUser!.displayName}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline3!
+                                .copyWith(color: CustomTheme.white),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        Text(
-                          '@${_currentUser!.username}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1!
-                              .copyWith(color: CustomTheme.white),
+                        Flexible(
+                          child: Text(
+                            '@${_currentUser!.username}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1!
+                                .copyWith(color: CustomTheme.white),
+                          ),
                         )
                       ],
                     ),
                   ),
                   ListTile(
-                    title: const Text('Change theme'),
+                    title: const Text('Edit user'),
                     horizontalTitleGap: 5,
-                    leading: Icon(Icons.light,
+                    leading: Icon(Icons.edit,
                         color: Theme.of(context).textTheme.bodyText1!.color),
-                    onTap: () {
-                      currentTheme.toggleTheme();
-                    },
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                EditUserPage(user: this._currentUser!))),
                   ),
                   ListTile(
                     title: const Text('Logout'),
@@ -183,17 +200,6 @@ class _AppWrapperState extends State<AppWrapper> {
                     onTap: () {
                       AuthApi.logout().then((value) => this.onChange());
                     },
-                  ),
-                  ListTile(
-                    title: const Text('Edit user'),
-                    horizontalTitleGap: 5,
-                    leading: Icon(Icons.logout,
-                        color: Theme.of(context).textTheme.bodyText1!.color),
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                EditUserPage(user: this._currentUser!))),
                   ),
                 ],
               ),

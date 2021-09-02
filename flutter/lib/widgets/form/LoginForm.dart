@@ -49,8 +49,7 @@ class _LoginFormState extends State<LoginForm> {
             SizedBox(
               height: 20.0,
             ),
-            Center(
-                child: ElevatedButton(
+            ElevatedButton(
               onPressed: () {
                 _formKey.currentState!.save();
                 AuthApi.login(_username, _password).then((response) {
@@ -64,7 +63,7 @@ class _LoginFormState extends State<LoginForm> {
                 });
               },
               child: const Text('Log in'),
-            )),
+            ),
           ],
         )));
   }

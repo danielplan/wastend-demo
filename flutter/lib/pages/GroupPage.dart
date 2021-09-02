@@ -10,16 +10,13 @@ class GroupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      TitleText(
-          title: 'Group',
-          text:
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In egestas tellus enim magna pretium'),
-      SizedBox(height: 20),
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      TitleText(title: 'Group'),
+      SizedBox(height: 30),
       UserList(),
-      SizedBox(height: 20),
+      SizedBox(height: 40),
       ElevatedButton(
-        child: const Text('Leave this group'),
+        child: const Text('Leave'),
         onPressed: () {
           GroupApi.leaveGroup().then((success) {
             this.onLeave();

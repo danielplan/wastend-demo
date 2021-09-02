@@ -4,7 +4,6 @@ import 'package:wastend/api/InventoryApi.dart';
 import 'package:wastend/models/InventoryItem.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:wastend/pages/inventory/EditInventoryItemPage.dart';
-import 'package:wastend/widgets/ui/Tag.dart';
 
 class InventoryItemWidget extends StatefulWidget {
   final InventoryItem item;
@@ -54,56 +53,77 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
+                            _getAmountIndicator(true),
+                            SizedBox(height: 5),
                             Text(
                               item.name,
-                              style: Theme.of(context).textTheme.headline2,
+                              style: Theme.of(context).textTheme.headline1,
+                            ),
+                            SizedBox(height: 3),
+                            _getAmountText(),
+                            SizedBox(height: 25),
+                            Flex(
+                              direction: Axis.horizontal,
+                              children: [
+                                Expanded(
+                                  child: Material(
+                                    child: Form(
+                                        key: _formKey,
+                                        child: TextFormField(
+                                            decoration: new InputDecoration(
+                                                labelText: 'Amount',
+                                                suffixText: this.item.unit),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1,
+                                            keyboardType: TextInputType.number,
+                                            initialValue:
+                                                item.amount.toString(),
+                                            onSaved: (value) => item.amount =
+                                                value == null || value == ''
+                                                    ? 0
+                                                    : double.parse(value))),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Container(
+                                    width: 65,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        double oldAmount = item.amount;
+                                        _formKey.currentState!.save();
+                                        InventoryApi.updateItem(item)
+                                            .then((response) {
+                                          if (response.errors != null) {
+                                            final snackBar = SnackBar(
+                                              content: Text(response.errors!
+                                                  .join((', '))),
+                                            );
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(snackBar);
+                                          }
+                                          if (response.success) {
+                                            Navigator.of(context).pop();
+                                            setState(() {});
+                                          } else {
+                                            setState(() {
+                                              item.amount = oldAmount;
+                                            });
+                                          }
+                                        });
+                                      },
+                                      child: Icon(Icons.arrow_forward),
+                                    )),
+                              ],
                             ),
                             SizedBox(height: 20),
-                            Material(
-                              child: Form(
-                                  key: _formKey,
-                                  child: TextFormField(
-                                      decoration: new InputDecoration(
-                                          labelText: 'Amount',
-                                          suffixText: this.item.unit),
-                                      style:
-                                          Theme.of(context).textTheme.bodyText1,
-                                      keyboardType: TextInputType.number,
-                                      initialValue: item.amount.toString(),
-                                      onSaved: (value) => item.amount =
-                                          value == null || value == ''
-                                              ? 0
-                                              : double.parse(value))),
+                            Divider(
+                              thickness: 3,
+                              color: Theme.of(context)
+                                  .inputDecorationTheme
+                                  .fillColor,
                             ),
-                            SizedBox(height: 10),
-                            ElevatedButton(
-                                onPressed: () {
-                                  double oldAmount = item.amount;
-                                  _formKey.currentState!.save();
-                                  InventoryApi.updateItem(item)
-                                      .then((response) {
-                                    if (response.errors != null) {
-                                      final snackBar = SnackBar(
-                                        content:
-                                            Text(response.errors!.join((', '))),
-                                      );
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(snackBar);
-                                    }
-                                    if (response.success) {
-                                      Navigator.of(context).pop();
-                                      setState(() {});
-                                    } else {
-                                      setState(() {
-                                        item.amount = oldAmount;
-                                      });
-                                    }
-                                  });
-                                },
-                                child: Text('Update amount')),
-                            SizedBox(height: 10),
-                            Divider(),
-                            SizedBox(height: 10),
+                            SizedBox(height: 20),
                             ElevatedButton.icon(
                                 onPressed: () {
                                   item.toBuy = !item.toBuy;
@@ -184,9 +204,9 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
 
   Widget _getAmountDot(Color color) {
     return Container(
-      width: 12,
-      height: 12,
-      margin: EdgeInsets.all(3),
+      width: 11,
+      height: 11,
+      margin: EdgeInsets.all(2),
       decoration:
           BoxDecoration(borderRadius: BorderRadius.circular(5), color: color),
     );
@@ -208,12 +228,15 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
     return _indicators;
   }
 
-  Widget _getAmountIndicator() {
+  Widget _getAmountIndicator(bool reversed) {
     Map<String, dynamic>? status = item.getStatus();
     if (status == null) {
       return SizedBox(height: 0, width: 0);
     }
-    return Row(children: _getAmountIndicatorList(status));
+    return Row(
+        children: reversed
+            ? _getAmountIndicatorList(status).reversed.toList()
+            : _getAmountIndicatorList(status));
   }
 
   Widget _getCategoryIcon() {
@@ -235,12 +258,12 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
   Widget _getAmountText() {
     return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
       Text(
-        '${formatAmount(item.amount)} ${item.unit}',
+        '${formatAmount(item.amount)}${item.unit}',
         style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
       ),
       (item.minimumAmount != null
           ? Text(
-              ' / ${formatAmount(item.minimumAmount!)} ${item.unit}',
+              ' / ${formatAmount(item.minimumAmount!)}${item.unit}',
               style: TextStyle(fontSize: 12),
             )
           : SizedBox())
@@ -264,7 +287,8 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
             child: Stack(alignment: Alignment.topLeft, children: [
               item.toBuy
                   ? Container(
-                      child: Icon(Icons.sell, color: Theme.of(context).backgroundColor, size: 16),
+                      child: Icon(Icons.sell,
+                          color: Theme.of(context).backgroundColor, size: 16),
                       width: 30,
                       height: 30,
                       transform: Matrix4.translationValues(-20, -20, 0),
@@ -294,7 +318,7 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                                 _getAmountText(),
                               ])
                         ])),
-                    _getAmountIndicator(),
+                    _getAmountIndicator(false),
                   ]),
             ])));
   }
