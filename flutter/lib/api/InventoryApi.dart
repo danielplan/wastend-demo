@@ -7,7 +7,8 @@ class InventoryApi {
     ApiResponse response = await Api.apiGet('inventory');
     var data = response.data;
     return data
-        .map<InventoryItem>((item) => InventoryItem.fromJson(item)).toList();
+        .map<InventoryItem>((item) => InventoryItem.fromJson(item))
+        .toList();
   }
 
   static Future<ApiResponse> addItem(InventoryItem item) async {

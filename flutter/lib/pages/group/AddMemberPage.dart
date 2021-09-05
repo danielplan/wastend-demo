@@ -13,9 +13,8 @@ class AddMemberPage extends StatelessWidget {
         icon: Icons.group_add,
         body: Column(
           children: [
-            TitleText(
-                title: 'Add a group member',
-                text: 'Just give the name add the member'),
+            TitleText(title: 'Add a new group member'),
+            SizedBox(height: 25),
             AddMemberForm()
           ],
         ));

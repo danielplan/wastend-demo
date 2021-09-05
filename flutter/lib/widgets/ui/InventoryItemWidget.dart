@@ -67,6 +67,7 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                               children: [
                                 Expanded(
                                   child: Material(
+                                    color: Theme.of(context).backgroundColor,
                                     child: Form(
                                         key: _formKey,
                                         child: TextFormField(

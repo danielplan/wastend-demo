@@ -27,6 +27,7 @@ class InventoryItem {
       this.minimumAmount});
 
   static InventoryItem fromJson(Map<String, dynamic> json) {
+    print(json);
     return new InventoryItem(
       id: int.parse(json['id'].toString()),
       name: json['name'],

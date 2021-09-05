@@ -27,7 +27,7 @@ class _RegisterFormState extends State<RegisterForm> {
         key: _formKey,
         child: Scrollbar(
             child: Flex(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           direction: Axis.vertical,
           children: <Widget>[
             ErrorList(errors: _errors),
@@ -72,8 +72,7 @@ class _RegisterFormState extends State<RegisterForm> {
             SizedBox(
               height: 20.0,
             ),
-            Center(
-                child: ElevatedButton(
+            ElevatedButton(
               onPressed: () {
                 _formKey.currentState!.save();
                 if (_password == _password2) {
@@ -90,7 +89,8 @@ class _RegisterFormState extends State<RegisterForm> {
                       }
                     });
                   } else {
-                    User _user = new User(username: _username, displayName: _displayName);
+                    User _user = new User(
+                        username: _username, displayName: _displayName);
                     AuthApi.update(_user, _password).then((response) {
                       if (response.success) {
                         Navigator.of(context).pop();
@@ -103,8 +103,9 @@ class _RegisterFormState extends State<RegisterForm> {
                   }
                 }
               },
-              child: const Text('Create account'),
-            )),
+              child: Text(
+                  this.widget.user == null ? 'Create account' : 'Edit account'),
+            ),
           ],
         )));
   }

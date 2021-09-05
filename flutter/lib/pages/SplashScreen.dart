@@ -45,16 +45,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return _currentPage ??
-        SafeArea(
-            child: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor
-                ),
-                child: Center(
-                    child: Column(
-                      children: [
-                        Loading()
-                      ],
-                    ))));
+        Scaffold(
+            body: Container(
+                decoration:
+                    BoxDecoration(color: Theme.of(context).backgroundColor),
+                child: Center(child: Loading())));
   }
 }

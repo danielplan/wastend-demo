@@ -31,52 +31,38 @@ class _InventoryItemFormState extends State<InventoryItemForm> {
             ErrorList(errors: _errors),
             TextFormField(
               decoration: new InputDecoration(labelText: 'Name'),
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyText1,
+              style: Theme.of(context).textTheme.bodyText1,
               initialValue:
-              this.widget.item != null ? this.widget.item!.name : null,
+                  this.widget.item != null ? this.widget.item!.name : null,
               onSaved: (value) => _name = value ?? '',
             ),
             SizedBox(height: 10.0),
             TextFormField(
                 decoration: new InputDecoration(labelText: 'Amount'),
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyText1,
+                style: Theme.of(context).textTheme.bodyText1,
                 keyboardType: TextInputType.number,
                 initialValue: this.widget.item != null
                     ? this.widget.item!.amount.toString()
                     : null,
-                onSaved: (value) =>
-                _amount =
-                value == null || value == '' ? -1 : double.parse(value)),
+                onSaved: (value) => _amount =
+                    value == null || value == '' ? -1 : double.parse(value)),
             SizedBox(height: 10.0),
             TextFormField(
                 decoration: new InputDecoration(labelText: 'Unit'),
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyText1,
+                style: Theme.of(context).textTheme.bodyText1,
                 initialValue:
-                this.widget.item != null ? this.widget.item!.unit : null,
+                    this.widget.item != null ? this.widget.item!.unit : null,
                 onSaved: (value) => _unit = value ?? ''),
             SizedBox(height: 10.0),
             TextFormField(
                 decoration: new InputDecoration(labelText: 'Minimum amount'),
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyText1,
+                style: Theme.of(context).textTheme.bodyText1,
                 initialValue: this.widget.item != null
                     ? this.widget.item!.minimumAmount.toString()
                     : null,
                 keyboardType: TextInputType.number,
-                onSaved: (value) =>
-                _minimumAmount =
-                value == null || value == '' ? null : double.parse(value)),
+                onSaved: (value) => _minimumAmount =
+                    value == null || value == '' ? null : double.parse(value)),
             SizedBox(
               height: 20.0,
             ),
@@ -118,7 +104,7 @@ class _InventoryItemFormState extends State<InventoryItemForm> {
                   });
                 }
               },
-              child: const Text('Add item'),
+              child: Text(this.widget.item == null ? 'Add item' : 'Edit item'),
             ),
           ],
         ));

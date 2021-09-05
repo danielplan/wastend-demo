@@ -4,7 +4,6 @@ import 'package:wastend/widgets/layout/PageWrapper.dart';
 import 'package:wastend/widgets/ui/TitleText.dart';
 
 class CreateInventoryItemPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return PageWrapper(
@@ -12,8 +11,8 @@ class CreateInventoryItemPage extends StatelessWidget {
         icon: Icons.house,
         body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           TitleText(
-              title: 'Add a new item',
-              text: 'Create a new item in your inventory'),
+            title: 'Add a new item',
+          ),
           SizedBox(height: 25.0),
           InventoryItemForm()
         ]));

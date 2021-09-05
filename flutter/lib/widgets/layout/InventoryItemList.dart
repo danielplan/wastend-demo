@@ -15,6 +15,12 @@ class InventoryItemList extends StatefulWidget {
 class _InventoryItemListState extends State<InventoryItemList> {
   List<InventoryItem>? _items;
   List<InventoryItem>? _filteredItems;
+  String filter = 'az';
+  static Map<String, String> filterItems = {
+    'az': 'Alphabetically A-Z',
+    'za': 'Alphabetically Z-A',
+    'buy': 'To buy',
+  };
 
   @override
   void initState() {
@@ -27,9 +33,29 @@ class _InventoryItemListState extends State<InventoryItemList> {
         ));
   }
 
+  List<InventoryItem>? _sortItems(List<InventoryItem>? items) {
+    if (items == null) {
+      return [];
+    }
+    switch (filter) {
+      case 'buy':
+        items.sort((a, b) => (a.toBuy ? 1 : 0) + (b.toBuy ? 1 : 0));
+        return items;
+      case 'az':
+        items.sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        return items;
+      case 'za':
+        items.sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        return items.reversed.toList();
+    }
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
@@ -61,12 +87,32 @@ class _InventoryItemListState extends State<InventoryItemList> {
           },
         ),
       ),
+      DropdownButton<String>(
+          value: filter,
+          dropdownColor: Theme.of(context).backgroundColor,
+          style: Theme.of(context).textTheme.bodyText1!,
+          itemHeight: 70,
+          underline: Container(
+            height: 2,
+            color: Theme.of(context).primaryColor,
+          ),
+          onChanged: (String? newValue) {
+            setState(() {
+              filter = newValue!;
+            });
+          },
+          items: filterItems.keys
+              .map((key) => new DropdownMenuItem<String>(
+                    child: Text(filterItems[key] ?? ''),
+                    value: key,
+                  ))
+              .toList()),
       SizedBox(height: 40),
       (_items == null
           ? Loading()
           : (_items != null && _items!.length > 0
               ? Column(
-                  children: _filteredItems!
+                  children: _sortItems(_filteredItems)!
                       .map((item) => InventoryItemWidget(
                           key: new UniqueKey(),
                           item: item,

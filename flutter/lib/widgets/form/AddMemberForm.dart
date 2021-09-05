@@ -27,9 +27,8 @@ class _AddMemberFormState extends State<AddMemberForm> {
                 style: Theme.of(context).textTheme.bodyText1,
                 onSaved: (value) => _username = value ?? '',
               ),
-              SizedBox(height: 10.0),
-              Center(
-                  child: ElevatedButton(
+              SizedBox(height: 25.0),
+              ElevatedButton(
                 onPressed: () {
                   _formKey.currentState!.save();
                   GroupApi.addMember(_username).then((response) {
@@ -44,8 +43,8 @@ class _AddMemberFormState extends State<AddMemberForm> {
                     }
                   });
                 },
-                child: const Text('Add user'),
-              )),
+                child: const Text('Add'),
+              ),
             ]));
   }
 }

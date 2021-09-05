@@ -15,9 +15,7 @@ class EditInventoryItemPage extends StatelessWidget {
         name: 'Inventory',
         icon: Icons.house,
         body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          TitleText(
-              title: 'Add a new item',
-              text: 'Create a new item in your inventory'),
+          TitleText(title: 'Edit ${item.name}'),
           SizedBox(height: 25.0),
           InventoryItemForm(item: item)
         ]));

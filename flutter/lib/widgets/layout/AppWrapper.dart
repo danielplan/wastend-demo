@@ -182,7 +182,7 @@ class _AppWrapperState extends State<AppWrapper> {
                     ),
                   ),
                   ListTile(
-                    title: const Text('Edit user'),
+                    title: const Text('Edit account'),
                     horizontalTitleGap: 5,
                     leading: Icon(Icons.edit,
                         color: Theme.of(context).textTheme.bodyText1!.color),
