@@ -20,9 +20,9 @@ export class InventoryItem {
     @Column()
     @ApiProperty({
         description: 'Amount of the item in the inventory',
-        type: Number,
+        type: String,
     })
-    amount: number;
+    amount: string;
 
     @Column()
     @ApiProperty({
@@ -34,9 +34,9 @@ export class InventoryItem {
     @Column()
     @ApiProperty({
         description: 'Minimum amount',
-        type: Number,
+        type: String,
     })
-    minimumAmount?: number;
+    minimumAmount?: string;
 
     @Column()
     @ApiProperty({
@@ -62,7 +62,7 @@ export class InventoryItem {
     static validate(item: InventoryItem): void {
         const validation: Validator = new Validator();
         validation.assertExists('name', item.name);
-        validation.assertGreaterOrEqualTo('amount', item.amount, 0);
+        validation.assertGreaterOrEqualTo('amount', Number.parseFloat(item.amount), 0);
         validation.assertExists('unit', item.unit);
         validation.throwErrors(HttpStatus.BAD_REQUEST);
     }
