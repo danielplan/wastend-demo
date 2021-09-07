@@ -15,13 +15,17 @@ class LoginPage extends StatelessWidget {
         name: 'Login',
         icon: Icons.login,
         body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          new TitleText(title: 'Login', text: 'Get started now'),
+          TitleText(title: 'Login', text: 'Get started now'),
           SizedBox(height: 25.0),
-          new LoginForm(onLogin: onLogin),
-          new TextButton(
+          LoginForm(onLogin: onLogin),
+          TextButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RegisterPage(onChange: this.onLogin,)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RegisterPage(
+                              onChange: this.onLogin,
+                            )));
               },
               child: Text('Or create a new account'))
         ]));

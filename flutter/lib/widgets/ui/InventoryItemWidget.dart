@@ -3,6 +3,7 @@ import 'package:wastend/abstract/themes.dart';
 import 'package:wastend/api/InventoryApi.dart';
 import 'package:wastend/models/InventoryItem.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:wastend/models/ItemCategory.dart';
 import 'package:wastend/pages/inventory/EditInventoryItemPage.dart';
 
 class InventoryItemWidget extends StatefulWidget {
@@ -130,15 +131,17 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
                                   item.toBuy = !item.toBuy;
                                   InventoryApi.updateItem(item)
                                       .then((response) {
-                                    setState(() {});
-                                    final snackBar = SnackBar(
-                                      content: Text(item.toBuy
-                                          ? 'Marked ${item.name} as "to buy"'
-                                          : 'Unmarked ${item.name} as "to buy"'),
-                                    );
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackBar);
-                                    Navigator.of(context).pop();
+                                    if (response.success) {
+                                      setState(() {});
+                                      final snackBar = SnackBar(
+                                        content: Text(item.toBuy
+                                            ? 'Marked ${item.name} as "to buy"'
+                                            : 'Unmarked ${item.name} as "to buy"'),
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
+                                      Navigator.of(context).pop();
+                                    }
                                   });
                                 },
                                 label: Text(item.toBuy
@@ -243,13 +246,17 @@ class _InventoryItemWidgetState extends State<InventoryItemWidget> {
   Widget _getCategoryIcon() {
     Map<String, dynamic>? status = item.getStatus();
     return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        color: status != null ? status['color'] : CustomTheme.dark,
-      ),
-    );
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          color: status != null ? status['color'] : CustomTheme.dark,
+        ),
+        child: Icon(
+          ItemCategory.getIcon(item.categoryId),
+          color: CustomTheme.white,
+          size: 36,
+        ));
   }
 
   String formatAmount(double amount) {

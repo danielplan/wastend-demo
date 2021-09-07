@@ -1,3 +1,4 @@
+import { ItemCategory } from './../models/category.entity';
 import { Validator } from './../../validator';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,9 +11,11 @@ export class InventoryService {
     constructor(
         @InjectRepository(InventoryItem)
         private readonly inventoryItemRepository: Repository<InventoryItem>,
+        @InjectRepository(ItemCategory)
+        private readonly categoryRepository: Repository<ItemCategory>,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
-    ) {}
+    ) { }
 
     async addInventoryItem(
         inventoryItem: InventoryItem,
@@ -36,6 +39,9 @@ export class InventoryService {
             where: {
                 group: user.group,
             },
+            order: {
+                name: 'ASC',
+            },
             relations: ['category'],
         });
     }
@@ -45,6 +51,8 @@ export class InventoryService {
         newItem: InventoryItem,
         user: User,
     ): Promise<InventoryItem> {
+        console.log(newItem);
+
         user = await this.userRepository.findOne(user.id, {
             relations: ['group'],
         });
@@ -84,6 +92,10 @@ export class InventoryService {
         this.assertItemIsInGroup(user, item);
         this.inventoryItemRepository.remove(item);
         return item;
+    }
+
+    async getAllCategories(): Promise<ItemCategory[]> {
+        return this.categoryRepository.find();
     }
 
     assertItemIsInGroup(user: User, item: InventoryItem) {

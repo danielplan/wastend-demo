@@ -1,3 +1,4 @@
+import { ItemCategory } from './../models/category.entity';
 import { JwtGuard } from './../../auth/guards/jwt.guard';
 import { InventoryService } from '../services/inventory.service';
 import {
@@ -27,6 +28,15 @@ export class InventoryController {
     @UseGuards(JwtGuard)
     getAllItems(@Request() req): Promise<InventoryItem[]> {
         return this.inventoryService.getAllInventoryItems(req.user);
+    }
+
+    @Get('categories')
+    @ApiOperation({
+        summary: 'Finds all categories for Inventory Items',
+        tags: ['Inventory'],
+    })
+    getAllCategories(): Promise<ItemCategory[]> {
+        return this.inventoryService.getAllCategories();
     }
 
     @Post()

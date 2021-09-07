@@ -1,6 +1,7 @@
 import 'package:wastend/api/Api.dart';
 import 'package:wastend/api/ApiResponse.dart';
 import 'package:wastend/models/InventoryItem.dart';
+import 'package:wastend/models/ItemCategory.dart';
 
 class InventoryApi {
   static Future<List<InventoryItem>> getAllItems() async {
@@ -8,6 +9,14 @@ class InventoryApi {
     var data = response.data;
     return data
         .map<InventoryItem>((item) => InventoryItem.fromJson(item))
+        .toList();
+  }
+
+  static Future<List<ItemCategory>> getAllCategories() async {
+    ApiResponse response = await Api.apiGet('inventory/categories');
+    var data = response.data;
+    return data
+        .map<ItemCategory>((item) => ItemCategory.fromJson(item))
         .toList();
   }
 

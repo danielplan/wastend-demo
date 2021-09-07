@@ -32,8 +32,6 @@ class _AddMemberFormState extends State<AddMemberForm> {
                 onPressed: () {
                   _formKey.currentState!.save();
                   GroupApi.addMember(_username).then((response) {
-                    print(response.success);
-                    print(response.failed);
                     if (response.success) {
                       Navigator.of(context).pop();
                     } else if (response.errors != null) {

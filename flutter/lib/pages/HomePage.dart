@@ -6,9 +6,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      new TitleText(
-          title: 'Inventory'
-      ),
+      new TitleText(title: 'Inventory'),
       SizedBox(height: 20),
       InventoryItemList(),
     ]);

@@ -27,26 +27,26 @@ class InventoryItem {
       this.minimumAmount});
 
   static InventoryItem fromJson(Map<String, dynamic> json) {
-    print(json);
     return new InventoryItem(
-      id: int.parse(json['id'].toString()),
-      name: json['name'],
-      amount: double.parse(json['amount'].toString()),
-      unit: json['unit'],
-      toBuy: json['toBuy'] ?? false,
-      minimumAmount: json['minimumAmount'] != 'null'
-          ? double.parse(json['minimumAmount'].toString())
-          : null,
-    );
+        id: int.parse(json['id'].toString()),
+        name: json['name'],
+        amount: double.parse(json['amount'].toString()),
+        unit: json['unit'],
+        toBuy: json['toBuy'] ?? false,
+        minimumAmount: json['minimumAmount'] != 'null'
+            ? double.parse(json['minimumAmount'].toString())
+            : null,
+        categoryId: json['category'] != null ? json['category']['id'] : null);
   }
 
   Map<String, dynamic> toJson() {
     return {
       'name': this.name,
-      'amount': jsonEncode(this.amount),
-      'minimumAmount': jsonEncode(this.minimumAmount),
+      'amount': this.amount,
+      'minimumAmount': this.minimumAmount,
       'unit': this.unit,
-      'toBuy': jsonEncode(this.toBuy)
+      'toBuy': this.toBuy,
+      'category': this.categoryId
     };
   }
 

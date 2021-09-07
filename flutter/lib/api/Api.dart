@@ -6,6 +6,7 @@ import 'package:wastend/api/AuthApi.dart';
 
 class Api {
   static const String URL = 'http://10.0.0.172:3001/api';
+  //static const String URL = 'http://10.0.0.150:3001/api';
   static final STORAGE = new FlutterSecureStorage();
 
   static List<String> parseErrors(http.Response response) {
@@ -27,10 +28,16 @@ class Api {
 
   static Future<Map<String, String>> getHeader() async {
     String? token = await STORAGE.read(key: 'token');
+    Map<String, String> header = {
+      'Content-Type': 'application/json',
+    };
     if (token != null) {
-      return {'Authorization': 'Bearer $token'};
+      return {
+        ...header,
+        'Authorization': 'Bearer $token',
+      };
     }
-    return {};
+    return header;
   }
 
   static getUri(String endpoint) {
@@ -43,6 +50,7 @@ class Api {
       http.Response response = await http.get(uri, headers: await getHeader());
       return parseResponse(response);
     } catch (e) {
+      print(e);
       return new ApiResponse(success: false, failed: true);
     }
   }
@@ -50,10 +58,11 @@ class Api {
   static Future<ApiResponse> apiPost(String endpoint, Object? payload) async {
     Uri uri = getUri(endpoint);
     try {
-      http.Response response =
-          await http.post(uri, headers: await getHeader(), body: payload);
+      http.Response response = await http.post(uri,
+          headers: await getHeader(), body: jsonEncode(payload));
       return parseResponse(response);
     } catch (e) {
+      print(e);
       return new ApiResponse(success: false, failed: true);
     }
   }
@@ -61,10 +70,11 @@ class Api {
   static Future<ApiResponse> apiPatch(String endpoint, Object? payload) async {
     Uri uri = getUri(endpoint);
     try {
-      http.Response response =
-          await http.patch(uri, headers: await getHeader(), body: payload);
+      http.Response response = await http.patch(uri,
+          headers: await getHeader(), body: jsonEncode(payload));
       return parseResponse(response);
     } catch (e) {
+      print(e);
       return new ApiResponse(success: false, failed: true);
     }
   }
@@ -72,10 +82,11 @@ class Api {
   static Future<ApiResponse> apiPut(String endpoint, Object? payload) async {
     Uri uri = getUri(endpoint);
     try {
-      http.Response response =
-          await http.put(uri, headers: await getHeader(), body: payload);
+      http.Response response = await http.put(uri,
+          headers: await getHeader(), body: jsonEncode(payload));
       return parseResponse(response);
     } catch (e) {
+      print(e);
       return new ApiResponse(success: false, failed: true);
     }
   }
@@ -87,6 +98,7 @@ class Api {
           await http.delete(uri, headers: await getHeader());
       return parseResponse(response);
     } catch (e) {
+      print(e);
       return new ApiResponse(success: false, failed: true);
     }
   }

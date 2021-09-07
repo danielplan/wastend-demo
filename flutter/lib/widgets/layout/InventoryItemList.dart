@@ -76,8 +76,9 @@ class _InventoryItemListState extends State<InventoryItemList> {
             if (value.trim() != '' && _items != null) {
               setState(() {
                 _filteredItems = _items!.toList();
-                _filteredItems!
-                    .removeWhere((element) => element.name.indexOf(value) < 0);
+                _filteredItems!.removeWhere((element) =>
+                    element.name.toLowerCase().indexOf(value.toLowerCase()) <
+                    0);
               });
             } else if (_items != null) {
               setState(() {
@@ -107,7 +108,7 @@ class _InventoryItemListState extends State<InventoryItemList> {
                     value: key,
                   ))
               .toList()),
-      SizedBox(height: 40),
+      SizedBox(height: 20),
       (_items == null
           ? Loading()
           : (_items != null && _items!.length > 0
