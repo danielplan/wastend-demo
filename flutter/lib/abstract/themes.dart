@@ -134,7 +134,7 @@ class CustomTheme with ChangeNotifier {
             headline1: lightTheme.textTheme.headline1!.copyWith(color: white),
             headline2: lightTheme.textTheme.headline2!.copyWith(color: white),
             headline3: lightTheme.textTheme.headline3!.copyWith(color: white),
-            headline4: lightTheme.textTheme.headline3!.copyWith(color: white),
+            headline4: lightTheme.textTheme.headline4!.copyWith(color: white),
             bodyText1: lightTheme.textTheme.bodyText1!.copyWith(color: white),
             bodyText2: lightTheme.textTheme.bodyText2!.copyWith(color: white)),
         iconTheme: IconThemeData(
