@@ -3,10 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:wastend/api/ApiResponse.dart';
 import 'package:wastend/api/AuthApi.dart';
+import 'package:wastend/config.dart';
 
 class Api {
-  static const String URL = 'http://10.0.0.172:3001/api';
-  //static const String URL = 'http://10.0.0.150:3001/api';
+  static const String URL = '$API_HOST/api';
   static final STORAGE = new FlutterSecureStorage();
 
   static List<String> parseErrors(http.Response response) {
