@@ -1,7 +1,7 @@
 {
-  "name": "server",
-  "version": "0.0.1",
-  "description": "",
+  "name": "wastend_api",
+  "version": "1.0.0",
+  "description": "API routes for wastend",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
